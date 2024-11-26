@@ -1,6 +1,4 @@
-# tests/test_customers.py
 def test_register_customer(client):
-    # Test successful registration
     response = client.post(
         "/customers",
         json={
@@ -16,7 +14,6 @@ def test_register_customer(client):
     assert response.status_code == 201
     assert response.get_json() == {"message": "Customer registered successfully"}
 
-    # Test registration with missing required fields
     response = client.post(
         "/customers",
         json={
@@ -29,7 +26,6 @@ def test_register_customer(client):
         "fullname, username, and password are required" in response.get_json()["error"]
     )
 
-    # Test registration with existing username
     response = client.post(
         "/customers",
         json={
@@ -43,7 +39,6 @@ def test_register_customer(client):
 
 
 def test_get_customer_by_username(client):
-    # First, register a customer
     client.post(
         "/customers",
         json={
@@ -53,21 +48,18 @@ def test_get_customer_by_username(client):
         },
     )
 
-    # Get the customer
     response = client.get("/customers/alicesmith")
     assert response.status_code == 200
     data = response.get_json()
     assert data["username"] == "alicesmith"
     assert data["fullname"] == "Alice Smith"
 
-    # Get non-existent customer
     response = client.get("/customers/nonexistent")
     assert response.status_code == 404
     assert response.get_json() == {"error": "Customer not found"}
 
 
 def test_delete_customer(client):
-    # Register a customer
     client.post(
         "/customers",
         json={
@@ -77,20 +69,17 @@ def test_delete_customer(client):
         },
     )
 
-    # Delete the customer
     response = client.delete("/customers/bobjohnson")
     assert response.status_code == 200
     assert response.get_json() == {
         "message": "Customer 'bobjohnson' deleted successfully"
     }
 
-    # Try to get the deleted customer
     response = client.get("/customers/bobjohnson")
     assert response.status_code == 404
 
 
 def test_update_customer(client):
-    # Register a customer
     client.post(
         "/customers",
         json={
@@ -100,7 +89,6 @@ def test_update_customer(client):
         },
     )
 
-    # Update the customer
     response = client.put(
         "/customers/charliebrown",
         json={
@@ -113,7 +101,6 @@ def test_update_customer(client):
         "message": "Customer 'charliebrown' updated successfully"
     }
 
-    # Get the updated customer
     response = client.get("/customers/charliebrown")
     assert response.status_code == 200
     data = response.get_json()
@@ -122,7 +109,6 @@ def test_update_customer(client):
 
 
 def test_charge_customer_wallet(client):
-    # Register a customer
     client.post(
         "/customers",
         json={
@@ -133,16 +119,14 @@ def test_charge_customer_wallet(client):
         },
     )
 
-    # Charge the customer's wallet
     response = client.post("/customers/wonderwoman/charge", json={"amount": 50})
     assert response.status_code == 200
     data = response.get_json()
     assert data["message"] == "Wallet charged successfully"
-    assert int(data["new_balance"]) == 150  # Cast to int for type match
+    assert int(data["new_balance"]) == 150
 
 
 def test_deduct_money_from_wallet(client):
-    # Register a customer with initial balance
     client.post(
         "/customers",
         json={
@@ -153,26 +137,22 @@ def test_deduct_money_from_wallet(client):
         },
     )
 
-    # Deduct amount less than balance
     response = client.post("/customers/batman/deduct", json={"amount": 50})
     assert response.status_code == 200
     data = response.get_json()
     assert data["message"] == "Amount deducted successfully"
-    assert int(data["new_balance"]) == 150  # Cast to int for type match
+    assert int(data["new_balance"]) == 150
 
-    # Deduct amount greater than balance
     response = client.post("/customers/batman/deduct", json={"amount": 300})
     assert response.status_code == 400
     assert response.get_json() == {"error": "Insufficient funds"}
 
-    # Deduct invalid amount
     response = client.post("/customers/batman/deduct", json={"amount": -10})
     assert response.status_code == 400
     assert "Invalid amount" in response.get_json()["error"]
 
 
 def test_get_all_customers(client):
-    # Register multiple customers
     client.post(
         "/customers",
         json={
@@ -190,7 +170,6 @@ def test_get_all_customers(client):
         },
     )
 
-    # Get all customers
     response = client.get("/customers")
     assert response.status_code == 200
     data = response.get_json()
