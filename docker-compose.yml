@@ -1,0 +1,93 @@
+services:
+  customers-service:
+    build:
+      context: .
+      dockerfile: customers/Dockerfile
+    ports:
+      - "5001:5001"
+    depends_on:
+      postgres:
+        condition: service_healthy # Wait for postgres to be healthy
+    networks:
+      - ecommerce_network
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ecommerce_db
+      DB_USER: bailoun
+      DB_PASSWORD: Hellohello123
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: inventory/Dockerfile
+    ports:
+      - "5002:5002"
+    depends_on:
+      postgres:
+        condition: service_healthy # Wait for postgres to be healthy
+    networks:
+      - ecommerce_network
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ecommerce_db
+      DB_USER: bailoun
+      DB_PASSWORD: Hellohello123
+
+  reviews-service:
+    build:
+      context: .
+      dockerfile: reviews/Dockerfile
+    ports:
+      - "5003:5003"
+    depends_on:
+      postgres:
+        condition: service_healthy # Wait for postgres to be healthy
+    networks:
+      - ecommerce_network
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ecommerce_db
+      DB_USER: bailoun
+      DB_PASSWORD: Hellohello123
+
+  sales-service:
+    build:
+      context: .
+      dockerfile: sales/Dockerfile
+    ports:
+      - "5004:5004"
+    depends_on:
+      postgres:
+        condition: service_healthy # Wait for postgres to be healthy
+    networks:
+      - ecommerce_network
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ecommerce_db
+      DB_USER: bailoun
+      DB_PASSWORD: Hellohello123
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: bailoun
+      POSTGRES_PASSWORD: Hellohello123
+      POSTGRES_DB: ecommerce_db
+    ports:
+      - "5432:5432"
+    networks:
+      - ecommerce_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U bailoun -d ecommerce_db" ]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
+networks:
+  ecommerce_network:
+    driver: bridge

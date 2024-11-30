@@ -4,7 +4,7 @@ from flask import g
 DB_NAME = "ecommerce_db"
 DB_USER = "bailoun"
 DB_PASSWORD = "Hellohello123"
-DB_HOST = "localhost"
+DB_HOST = "postgres"
 DB_PORT = "5432"
 
 
