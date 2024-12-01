@@ -5,7 +5,6 @@ from psycopg2 import sql
 reviews_bp = Blueprint("reviews", __name__)
 
 
-# Helper function to authenticate user based on HTTP headers
 def authenticate_user(request):
     """
     Authenticates the user by checking the 'username' and 'password' in HTTP headers.
@@ -20,14 +19,13 @@ def authenticate_user(request):
     conn = get_db()
     cur = conn.cursor()
 
-    # Check if the user exists and password matches
     cur.execute("SELECT id, password FROM customers WHERE username = %s", (username,))
     user = cur.fetchone()
 
     cur.close()
 
-    if user and user[1] == password:  # Simple password check (not secure in real apps)
-        return user[0]  # Return customer_id
+    if user and user[1] == password:
+        return user[0]
     return None
 
 
@@ -55,14 +53,12 @@ def submit_review():
         conn = get_db()
         cur = conn.cursor()
 
-        # Check if item exists
         cur.execute("SELECT id FROM inventory WHERE id = %s", (item_id,))
         item = cur.fetchone()
         if not item:
             cur.close()
             return jsonify({"error": "Item not found"}), 404
 
-        # Insert review
         cur.execute(
             """
             INSERT INTO reviews (customer_id, item_id, rating, comment)
@@ -111,7 +107,6 @@ def update_review(review_id):
         conn = get_db()
         cur = conn.cursor()
 
-        # Check if review exists and belongs to the customer
         cur.execute("SELECT customer_id FROM reviews WHERE id = %s", (review_id,))
         review = cur.fetchone()
         if not review:
@@ -121,7 +116,6 @@ def update_review(review_id):
             cur.close()
             return jsonify({"error": "Unauthorized action"}), 403
 
-        # Update review
         fields = []
         values = []
 
@@ -162,7 +156,6 @@ def delete_review(review_id):
         conn = get_db()
         cur = conn.cursor()
 
-        # Check if review exists and belongs to the customer
         cur.execute("SELECT customer_id FROM reviews WHERE id = %s", (review_id,))
         review = cur.fetchone()
         if not review:
@@ -172,7 +165,6 @@ def delete_review(review_id):
             cur.close()
             return jsonify({"error": "Unauthorized action"}), 403
 
-        # Delete review
         cur.execute("DELETE FROM reviews WHERE id = %s", (review_id,))
         conn.commit()
         cur.close()
@@ -229,7 +221,6 @@ def get_customer_reviews(username):
         conn = get_db()
         cur = conn.cursor()
 
-        # Get customer_id
         cur.execute("SELECT id FROM customers WHERE username = %s", (username,))
         customer = cur.fetchone()
         if not customer:
@@ -279,20 +270,15 @@ def moderate_review(review_id):
         if is_approved is None:
             return jsonify({"error": "is_approved is required"}), 400
 
-        # Here, you might implement authentication to check if the requester is an admin.
-        # For simplicity, we'll assume the requester is an admin.
-
         conn = get_db()
         cur = conn.cursor()
 
-        # Check if review exists
         cur.execute("SELECT id FROM reviews WHERE id = %s", (review_id,))
         review = cur.fetchone()
         if not review:
             cur.close()
             return jsonify({"error": "Review not found"}), 404
 
-        # Update is_approved status
         cur.execute(
             "UPDATE reviews SET is_approved = %s WHERE id = %s",
             (is_approved, review_id),

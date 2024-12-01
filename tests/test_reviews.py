@@ -1,5 +1,5 @@
 def test_submit_review(client):
-    # Create customer
+
     client.post(
         "/customers",
         json={
@@ -9,7 +9,6 @@ def test_submit_review(client):
         },
     )
 
-    # Create inventory item
     response = client.post(
         "/inventory",
         json={
@@ -21,7 +20,6 @@ def test_submit_review(client):
     )
     item_id = response.get_json()["id"]
 
-    # Submit a review with correct username/password in the headers
     response = client.post(
         "/reviews",
         json={
@@ -34,22 +32,19 @@ def test_submit_review(client):
     assert response.status_code == 201
     data = response.get_json()
     assert data["message"] == "Review submitted successfully"
-    assert "review_id" in data  # Ensure review_id is returned
+    assert "review_id" in data
 
-    # Try submitting review without required fields (only item_id)
     response = client.post(
         "/reviews",
         json={"item_id": item_id},
         headers={"Username": "ghopper", "Password": "password123"},
     )
     assert response.status_code == 400
-    assert (
-        "item_id and rating are required" in response.get_json()["error"]
-    )  # Match the error message
+    assert "item_id and rating are required" in response.get_json()["error"]
 
 
 def test_update_review(client):
-    # Create customer
+
     client.post(
         "/customers",
         json={
@@ -59,7 +54,6 @@ def test_update_review(client):
         },
     )
 
-    # Create inventory item
     response = client.post(
         "/inventory",
         json={
@@ -71,7 +65,6 @@ def test_update_review(client):
     )
     item_id = response.get_json()["id"]
 
-    # Submit a review
     response = client.post(
         "/reviews",
         json={
@@ -83,7 +76,6 @@ def test_update_review(client):
     )
     review_id = response.get_json()["review_id"]
 
-    # Update review with correct credentials
     response = client.put(
         f"/reviews/{review_id}",
         json={"rating": 5, "comment": "Great keyboard!"},
@@ -92,7 +84,6 @@ def test_update_review(client):
     assert response.status_code == 200
     assert response.get_json()["message"] == "Review updated successfully"
 
-    # Invalid update with an invalid rating
     response = client.put(
         f"/reviews/{review_id}",
         json={"rating": 6},
@@ -101,7 +92,6 @@ def test_update_review(client):
     assert response.status_code == 400
     assert "Rating must be between 1 and 5" in response.get_json()["error"]
 
-    # Unauthorized update attempt
     response = client.put(
         f"/reviews/{review_id}",
         json={"rating": 3},
@@ -111,9 +101,8 @@ def test_update_review(client):
     assert "Unauthorized, invalid username or password" in response.get_json()["error"]
 
 
-# Test for deleting a review
 def test_delete_review(client):
-    # Create customer
+
     client.post(
         "/customers",
         json={
@@ -123,7 +112,6 @@ def test_delete_review(client):
         },
     )
 
-    # Create inventory item
     response = client.post(
         "/inventory",
         json={
@@ -135,7 +123,6 @@ def test_delete_review(client):
     )
     item_id = response.get_json()["id"]
 
-    # Submit a review
     response = client.post(
         "/reviews",
         json={
@@ -147,7 +134,6 @@ def test_delete_review(client):
     )
     review_id = response.get_json()["review_id"]
 
-    # Delete the review with valid credentials
     response = client.delete(
         f"/reviews/{review_id}",
         json={"username": "ltorvalds"},
@@ -156,12 +142,10 @@ def test_delete_review(client):
     assert response.status_code == 200
     assert response.get_json()["message"] == "Review deleted successfully"
 
-    # Try to get deleted review (should not exist)
     response = client.get(f"/reviews/{review_id}")
     assert response.status_code == 404
     assert "Review not found" in response.get_json()["error"]
 
-    # Unauthorized delete attempt (wrong credentials)
     response = client.delete(
         f"/reviews/{review_id}",
         json={"username": "ltorvalds"},
@@ -171,7 +155,6 @@ def test_delete_review(client):
     assert "Unauthorized, invalid username or password" in response.get_json()["error"]
 
 
-# Test for getting product reviews
 def test_get_product_reviews(client):
     client.post(
         "/customers",
@@ -200,7 +183,6 @@ def test_get_product_reviews(client):
     )
     item_id = response.get_json()["id"]
 
-    # Submit reviews
     response = client.post(
         "/reviews",
         json={
@@ -222,11 +204,9 @@ def test_get_product_reviews(client):
     )
     review_id2 = response.get_json().get("review_id")
 
-    # Moderate reviews
     client.patch(f"/reviews/{review_id1}/moderate", json={"is_approved": True})
     client.patch(f"/reviews/{review_id2}/moderate", json={"is_approved": True})
 
-    # Get product reviews
     response = client.get(f"/reviews/product/{item_id}")
     assert response.status_code == 200
     data = response.get_json()
@@ -236,7 +216,6 @@ def test_get_product_reviews(client):
     assert "kjohnson" in usernames
 
 
-# Test for getting customer reviews
 def test_get_customer_reviews(client):
     client.post(
         "/customers",
@@ -267,7 +246,6 @@ def test_get_customer_reviews(client):
     )
     item_id2 = response.get_json()["id"]
 
-    # Submit reviews
     response = client.post(
         "/reviews",
         json={
@@ -287,7 +265,6 @@ def test_get_customer_reviews(client):
         headers={"Username": "mhamilton", "Password": "password123"},
     )
 
-    # Get customer reviews
     response = client.get("/reviews/customer/mhamilton")
     assert response.status_code == 200
     data = response.get_json()
@@ -297,7 +274,6 @@ def test_get_customer_reviews(client):
     assert "Tablet" in product_names
 
 
-# Test for moderating a review
 def test_moderate_review(client):
     client.post(
         "/customers",
@@ -328,14 +304,12 @@ def test_moderate_review(client):
     )
     review_id = response.get_json().get("review_id")
 
-    # Moderate review
     response = client.patch(
         f"/reviews/{review_id}/moderate", json={"is_approved": True}
     )
     assert response.status_code == 200
     assert response.get_json()["message"] == "Review moderation updated"
 
-    # Get product reviews
     response = client.get(f"/reviews/product/{item_id}")
     assert response.status_code == 200
     data = response.get_json()
@@ -343,7 +317,6 @@ def test_moderate_review(client):
     assert data[0]["review_id"] == review_id
 
 
-# Test for getting review details
 def test_get_review_details(client):
     client.post(
         "/customers",
@@ -374,7 +347,6 @@ def test_get_review_details(client):
     )
     review_id = response.get_json().get("review_id")
 
-    # Get review details
     response = client.get(f"/reviews/{review_id}")
     assert response.status_code == 200
     data = response.get_json()

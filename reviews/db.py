@@ -1,4 +1,3 @@
-# reviews/db.py
 from common.db import get_db
 
 

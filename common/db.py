@@ -41,7 +41,7 @@ def get_db_credentials():
 
 
 DB_NAME = "ecommerce_db"
-DB_HOST = "localhost"
+DB_HOST = "postgres"
 DB_PORT = "5432"
 
 
