@@ -7,7 +7,7 @@ services:
       - "5001:5001"
     depends_on:
       postgres:
-        condition: service_healthy # Wait for postgres to be healthy
+        condition: service_healthy
     networks:
       - ecommerce_network
     environment:
@@ -25,7 +25,7 @@ services:
       - "5002:5002"
     depends_on:
       postgres:
-        condition: service_healthy # Wait for postgres to be healthy
+        condition: service_healthy
     networks:
       - ecommerce_network
     environment:
@@ -43,7 +43,7 @@ services:
       - "5003:5003"
     depends_on:
       postgres:
-        condition: service_healthy # Wait for postgres to be healthy
+        condition: service_healthy
     networks:
       - ecommerce_network
     environment:
@@ -61,7 +61,7 @@ services:
       - "5004:5004"
     depends_on:
       postgres:
-        condition: service_healthy # Wait for postgres to be healthy
+        condition: service_healthy
     networks:
       - ecommerce_network
     environment:

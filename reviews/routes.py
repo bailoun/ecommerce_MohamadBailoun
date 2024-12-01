@@ -1,8 +1,34 @@
-# reviews/routes.py
 from flask import Blueprint, request, jsonify
 from common.db import get_db
+from psycopg2 import sql
 
 reviews_bp = Blueprint("reviews", __name__)
+
+
+# Helper function to authenticate user based on HTTP headers
+def authenticate_user(request):
+    """
+    Authenticates the user by checking the 'username' and 'password' in HTTP headers.
+    Returns the customer_id if valid, otherwise returns None.
+    """
+    username = request.headers.get("Username")
+    password = request.headers.get("Password")
+
+    if not username or not password:
+        return None
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    # Check if the user exists and password matches
+    cur.execute("SELECT id, password FROM customers WHERE username = %s", (username,))
+    user = cur.fetchone()
+
+    cur.close()
+
+    if user and user[1] == password:  # Simple password check (not secure in real apps)
+        return user[0]  # Return customer_id
+    return None
 
 
 @reviews_bp.route("/reviews", methods=["POST"])
@@ -10,30 +36,24 @@ def submit_review():
     """
     Allows customers to submit a review for a specific product.
     """
+    customer_id = authenticate_user(request)
+    if not customer_id:
+        return jsonify({"error": "Unauthorized, invalid username or password"}), 401
+
     try:
         data = request.json
-
-        username = data.get("username")
         item_id = data.get("item_id")
         rating = data.get("rating")
         comment = data.get("comment", "")
 
-        if not username or not item_id or not rating:
-            return jsonify({"error": "username, item_id, and rating are required"}), 400
+        if not item_id or not rating:
+            return jsonify({"error": "item_id and rating are required"}), 400
 
         if rating < 1 or rating > 5:
             return jsonify({"error": "Rating must be between 1 and 5"}), 400
 
         conn = get_db()
         cur = conn.cursor()
-
-        # Get customer_id
-        cur.execute("SELECT id FROM customers WHERE username = %s", (username,))
-        customer = cur.fetchone()
-        if not customer:
-            cur.close()
-            return jsonify({"error": "Customer not found"}), 404
-        customer_id = customer[0]
 
         # Check if item exists
         cur.execute("SELECT id FROM inventory WHERE id = %s", (item_id,))
@@ -70,20 +90,18 @@ def update_review(review_id):
     """
     Allows customers to update their existing review.
     """
+    customer_id = authenticate_user(request)
+    if not customer_id:
+        return jsonify({"error": "Unauthorized, invalid username or password"}), 401
+
     try:
         data = request.json
-
-        username = data.get("username")
         rating = data.get("rating")
         comment = data.get("comment", "")
 
-        if not username or (rating is None and not comment):
+        if rating is None and not comment:
             return (
-                jsonify(
-                    {
-                        "error": "username and at least one of rating or comment are required"
-                    }
-                ),
+                jsonify({"error": "At least one of rating or comment is required"}),
                 400,
             )
 
@@ -92,14 +110,6 @@ def update_review(review_id):
 
         conn = get_db()
         cur = conn.cursor()
-
-        # Get customer_id
-        cur.execute("SELECT id FROM customers WHERE username = %s", (username,))
-        customer = cur.fetchone()
-        if not customer:
-            cur.close()
-            return jsonify({"error": "Customer not found"}), 404
-        customer_id = customer[0]
 
         # Check if review exists and belongs to the customer
         cur.execute("SELECT customer_id FROM reviews WHERE id = %s", (review_id,))
@@ -144,23 +154,13 @@ def delete_review(review_id):
     """
     Allows customers to delete their own review.
     """
+    customer_id = authenticate_user(request)
+    if not customer_id:
+        return jsonify({"error": "Unauthorized, invalid username or password"}), 401
+
     try:
-        data = request.json
-        username = data.get("username")
-
-        if not username:
-            return jsonify({"error": "username is required"}), 400
-
         conn = get_db()
         cur = conn.cursor()
-
-        # Get customer_id
-        cur.execute("SELECT id FROM customers WHERE username = %s", (username,))
-        customer = cur.fetchone()
-        if not customer:
-            cur.close()
-            return jsonify({"error": "Customer not found"}), 404
-        customer_id = customer[0]
 
         # Check if review exists and belongs to the customer
         cur.execute("SELECT customer_id FROM reviews WHERE id = %s", (review_id,))
