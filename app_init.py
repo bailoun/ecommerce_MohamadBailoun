@@ -9,6 +9,20 @@ from reviews import init_reviews_service
 
 
 def create_app():
+    """
+    Creates and configures the Flask application.
+
+    Sets up the rate limiter for API requests, ensuring that users
+    are restricted to 200 requests per day and 50 requests per hour.
+
+    Initializes database connections and sets up services for handling
+    customers, inventory, sales, and reviews.
+
+    Registers an error handler to manage rate-limiting exceptions (HTTP 429).
+
+    Returns:
+        Flask: The configured Flask application instance.
+    """
     app = Flask(__name__)
 
     limiter = Limiter(

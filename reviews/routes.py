@@ -33,6 +33,14 @@ def authenticate_user(request):
 def submit_review():
     """
     Allows customers to submit a review for a specific product.
+
+    The request must include:
+    - item_id: ID of the product being reviewed.
+    - rating: Rating between 1 and 5.
+    - comment: Optional textual review.
+
+    Returns:
+        A success message with the review ID, or error messages for invalid input.
     """
     customer_id = authenticate_user(request)
     if not customer_id:
@@ -85,6 +93,13 @@ def submit_review():
 def update_review(review_id):
     """
     Allows customers to update their existing review.
+
+    The request must include at least one of the following:
+    - rating: A new rating between 1 and 5.
+    - comment: A new review comment.
+
+    Returns:
+        A success message if the review was updated or an error if the review cannot be updated.
     """
     customer_id = authenticate_user(request)
     if not customer_id:
@@ -147,6 +162,9 @@ def update_review(review_id):
 def delete_review(review_id):
     """
     Allows customers to delete their own review.
+
+    Returns:
+        A success message if the review was deleted or an error if the review cannot be deleted.
     """
     customer_id = authenticate_user(request)
     if not customer_id:
@@ -178,6 +196,9 @@ def delete_review(review_id):
 def get_product_reviews(item_id):
     """
     Retrieves all approved reviews for a specific product.
+
+    Returns:
+        A list of reviews for the product, or an error if no reviews are found.
     """
     try:
         conn = get_db()
@@ -216,6 +237,9 @@ def get_product_reviews(item_id):
 def get_customer_reviews(username):
     """
     Lists all reviews submitted by a specific customer.
+
+    Returns:
+        A list of reviews made by the customer, or an error if no reviews are found.
     """
     try:
         conn = get_db()
@@ -262,6 +286,12 @@ def get_customer_reviews(username):
 def moderate_review(review_id):
     """
     Allows administrators to approve or flag reviews.
+
+    The request must include:
+    - is_approved: Boolean value indicating whether the review should be approved or flagged.
+
+    Returns:
+        A success message if the review was moderated successfully.
     """
     try:
         data = request.json
@@ -295,6 +325,9 @@ def moderate_review(review_id):
 def get_review_details(review_id):
     """
     Provides detailed information about a specific review.
+
+    Returns:
+        Detailed review information, including the customer and product details.
     """
     try:
         conn = get_db()

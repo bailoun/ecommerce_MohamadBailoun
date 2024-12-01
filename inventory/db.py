@@ -3,6 +3,20 @@ from psycopg2 import sql
 
 
 def init_inventory_db():
+    """
+    Initializes the 'inventory' table in the database by creating it if it doesn't exist.
+    The table contains information about inventory items, including name, category,
+    price, description, and stock count.
+
+    This function establishes a connection to the database, executes the SQL query to
+    create the table, and commits the changes.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     conn = get_db()
     cur = conn.cursor()
     cur.execute(

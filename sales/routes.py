@@ -8,6 +8,7 @@ sales_bp = Blueprint("sales", __name__)
 def display_available_goods():
     """
     Returns a list of available goods with their name and price.
+    Filters out items with zero stock and only includes those with available quantity.
     """
     try:
         conn = get_db()
@@ -36,7 +37,8 @@ def display_available_goods():
 @sales_bp.route("/sales/goods/<int:item_id>", methods=["GET"])
 def get_good_details(item_id):
     """
-    Returns full information related to a specific good.
+    Returns full information related to a specific good by item_id.
+    Retrieves details including the name, category, price, description, and stock count.
     """
     try:
         conn = get_db()
@@ -73,7 +75,8 @@ def get_good_details(item_id):
 @sales_bp.route("/sales/purchase", methods=["POST"])
 def make_purchase():
     """
-    Processes a sale: customer purchases a good.
+    Processes a sale where a customer purchases an item.
+    Checks for sufficient stock, customer funds, and updates both wallet and inventory accordingly.
     """
     try:
         data = request.json
@@ -157,7 +160,8 @@ def make_purchase():
 @sales_bp.route("/sales/customers/<username>/purchases", methods=["GET"])
 def get_customer_purchases(username):
     """
-    Returns all historical purchases made by a customer.
+    Returns all historical purchases made by a specific customer.
+    Retrieves a list of all past purchases including item details, quantity, and sale date.
     """
     try:
         conn = get_db()

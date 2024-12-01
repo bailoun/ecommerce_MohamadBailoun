@@ -8,6 +8,7 @@ customers_bp = Blueprint("customers", __name__)
 def register_customer():
     """
     Registers a new customer. Validates that the username is unique and stores customer information.
+    Returns a success message if registration is successful or an error message otherwise.
     """
     try:
         data = request.json
@@ -66,6 +67,7 @@ def register_customer():
 def delete_customer(username):
     """
     Deletes a customer from the database by username.
+    Returns a success message if the deletion is successful, or an error message if the customer is not found.
     """
     try:
         conn = get_db()
@@ -92,6 +94,8 @@ def delete_customer(username):
 def update_customer(username):
     """
     Updates one or more fields for a customer based on the provided username.
+    Valid fields include fullname, password, age, address, gender, marital_status.
+    Returns a success message if the update is successful or an error message if no valid fields are provided.
     """
     try:
         data = request.json
@@ -139,7 +143,8 @@ def update_customer(username):
 @customers_bp.route("/customers", methods=["GET"])
 def get_all_customers():
     """
-    Gets all customers and their information.
+    Retrieves all customers and their information.
+    Returns a list of all customers' details in JSON format or an error message if there is an issue fetching the data.
     """
     try:
         conn = get_db()
@@ -175,6 +180,7 @@ def get_all_customers():
 def get_customer_by_username(username):
     """
     Retrieves a customer by their unique username.
+    Returns the customer’s information if found, or an error message if the customer does not exist.
     """
     try:
         conn = get_db()
@@ -209,7 +215,8 @@ def get_customer_by_username(username):
 @customers_bp.route("/customers/<username>/charge", methods=["POST"])
 def charge_customer_wallet(username):
     """
-    Charges a customer's wallet in dollars.
+    Charges a customer's wallet with a specified amount.
+    Validates that the amount is positive. Returns the new wallet balance or an error message if invalid.
     """
     try:
         data = request.json
@@ -255,6 +262,7 @@ def charge_customer_wallet(username):
 def deduct_money_from_wallet(username):
     """
     Deducts money from a customer's wallet.
+    Ensures the amount is positive and that the customer has sufficient funds. Returns the new balance or an error message if there are insufficient funds.
     """
     try:
         data = request.json

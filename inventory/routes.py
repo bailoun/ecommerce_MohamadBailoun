@@ -7,7 +7,24 @@ inventory_bp = Blueprint("inventory", __name__)
 @inventory_bp.route("/inventory", methods=["POST"])
 def add_goods():
     """
-    Add goods to the inventory. Validates category, price, and count of items in stock.
+    Adds a new item to the inventory. Validates the category, price, and stock count.
+
+    This route accepts a JSON request containing the item's details:
+    - name (str)
+    - category (str)
+    - price_per_item (float)
+    - description (str, optional)
+    - count_in_stock (int)
+
+    It ensures that required fields are provided, category is valid, and stock
+    count and price are non-negative. If the validation passes, it inserts the
+    item into the inventory table and returns a success message with the item ID.
+
+    Args:
+        None
+
+    Returns:
+        JSON response with either success message and item ID, or error details.
     """
     try:
         data = request.json
@@ -32,7 +49,7 @@ def add_goods():
 
         if count_in_stock < 0:
             return (
-                jsonify({"error: Count of items in stock must be non-negative"}),
+                jsonify({"error": "Count of items in stock must be non-negative"}),
                 400,
             )
 
@@ -58,7 +75,19 @@ def add_goods():
 @inventory_bp.route("/inventory/<int:item_id>/deduct", methods=["PATCH"])
 def deduct_goods(item_id):
     """
-    Deduct a specified quantity of goods from stock.
+    Deducts a specified quantity of goods from the inventory stock.
+
+    This route accepts a JSON request containing:
+    - quantity (int): The number of items to deduct from the stock.
+
+    It checks that the quantity is valid, and that sufficient stock is available
+    before proceeding with the deduction. If successful, it returns a success message.
+
+    Args:
+        item_id (int): The ID of the item to deduct from.
+
+    Returns:
+        JSON response with either success message or error details.
     """
     try:
         data = request.json
@@ -96,7 +125,24 @@ def deduct_goods(item_id):
 @inventory_bp.route("/inventory/<int:item_id>", methods=["PUT"])
 def update_goods(item_id):
     """
-    Update fields related to a specific item in the inventory.
+    Updates the fields of a specific item in the inventory.
+
+    This route accepts a JSON request containing fields to update:
+    - name (str, optional)
+    - category (str, optional)
+    - price_per_item (float, optional)
+    - description (str, optional)
+    - count_in_stock (int, optional)
+
+    It validates the provided fields (e.g., non-negative price and stock) and updates
+    the corresponding fields in the inventory database. If successful, it returns the
+    updated item ID.
+
+    Args:
+        item_id (int): The ID of the item to update.
+
+    Returns:
+        JSON response with either success message or error details.
     """
     try:
         data = request.json

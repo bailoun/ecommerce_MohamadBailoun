@@ -2,6 +2,10 @@ from common.db import get_db
 
 
 def init_sales_db():
+    """
+    Initializes the sales database by creating the 'sales' table if it doesn't exist.
+    The table tracks sales transactions with references to customers and inventory items.
+    """
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
