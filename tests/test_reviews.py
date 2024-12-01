@@ -1,5 +1,8 @@
-def test_submit_review(client):
+from memory_profiler import profile
 
+
+@profile
+def test_submit_review(client):
     client.post(
         "/customers",
         json={
@@ -43,8 +46,8 @@ def test_submit_review(client):
     assert "item_id and rating are required" in response.get_json()["error"]
 
 
+@profile
 def test_update_review(client):
-
     client.post(
         "/customers",
         json={
@@ -101,8 +104,8 @@ def test_update_review(client):
     assert "Unauthorized, invalid username or password" in response.get_json()["error"]
 
 
+@profile
 def test_delete_review(client):
-
     client.post(
         "/customers",
         json={
@@ -155,6 +158,7 @@ def test_delete_review(client):
     assert "Unauthorized, invalid username or password" in response.get_json()["error"]
 
 
+@profile
 def test_get_product_reviews(client):
     client.post(
         "/customers",
@@ -216,6 +220,7 @@ def test_get_product_reviews(client):
     assert "kjohnson" in usernames
 
 
+@profile
 def test_get_customer_reviews(client):
     client.post(
         "/customers",
@@ -274,6 +279,7 @@ def test_get_customer_reviews(client):
     assert "Tablet" in product_names
 
 
+@profile
 def test_moderate_review(client):
     client.post(
         "/customers",
@@ -317,6 +323,7 @@ def test_moderate_review(client):
     assert data[0]["review_id"] == review_id
 
 
+@profile
 def test_get_review_details(client):
     client.post(
         "/customers",

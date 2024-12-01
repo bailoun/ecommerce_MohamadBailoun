@@ -1,3 +1,7 @@
+from memory_profiler import profile
+
+
+@profile
 def test_add_goods(client):
     response = client.post(
         "/inventory",
@@ -52,6 +56,7 @@ def test_add_goods(client):
     )
 
 
+@profile
 def test_deduct_goods(client):
     response = client.post(
         "/inventory",
@@ -77,6 +82,7 @@ def test_deduct_goods(client):
     assert "Invalid quantity" in response.get_json()["error"]
 
 
+@profile
 def test_update_goods(client):
     response = client.post(
         "/inventory",

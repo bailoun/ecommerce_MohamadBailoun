@@ -5,8 +5,10 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 import pytest
 from app_init import create_app
 from common.db import get_db, close_db
+from memory_profiler import profile
 
 
+@profile
 @pytest.fixture
 def app():
     app = create_app()
@@ -40,6 +42,7 @@ def app():
         cur.close()
 
 
+@profile
 @pytest.fixture
 def client(app):
     return app.test_client()

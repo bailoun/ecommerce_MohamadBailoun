@@ -1,3 +1,7 @@
+from memory_profiler import profile
+
+
+@profile
 def test_display_available_goods(client):
     client.post(
         "/inventory",
@@ -25,6 +29,7 @@ def test_display_available_goods(client):
     assert float(data[0]["price_per_item"]) == 1200.00
 
 
+@profile
 def test_get_good_details(client):
     response = client.post(
         "/inventory",
@@ -48,6 +53,7 @@ def test_get_good_details(client):
     assert response.get_json() == {"error": "Item not found"}
 
 
+@profile
 def test_make_purchase(client):
     client.post(
         "/customers",
@@ -110,6 +116,7 @@ def test_make_purchase(client):
     assert "Quantity must be positive" in response.get_json()["error"]
 
 
+@profile
 def test_get_customer_purchases(client):
     client.post(
         "/customers",

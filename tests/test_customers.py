@@ -1,3 +1,7 @@
+from memory_profiler import profile
+
+
+@profile
 def test_register_customer(client):
     response = client.post(
         "/customers",
@@ -38,6 +42,7 @@ def test_register_customer(client):
     assert response.get_json() == {"error": "Username is already taken"}
 
 
+@profile
 def test_get_customer_by_username(client):
     client.post(
         "/customers",
@@ -59,6 +64,7 @@ def test_get_customer_by_username(client):
     assert response.get_json() == {"error": "Customer not found"}
 
 
+@profile
 def test_delete_customer(client):
     client.post(
         "/customers",
@@ -79,6 +85,7 @@ def test_delete_customer(client):
     assert response.status_code == 404
 
 
+@profile
 def test_update_customer(client):
     client.post(
         "/customers",
@@ -108,6 +115,7 @@ def test_update_customer(client):
     assert data["address"] == "456 Elm St"
 
 
+@profile
 def test_charge_customer_wallet(client):
     client.post(
         "/customers",
@@ -126,6 +134,7 @@ def test_charge_customer_wallet(client):
     assert int(data["new_balance"]) == 150
 
 
+@profile
 def test_deduct_money_from_wallet(client):
     client.post(
         "/customers",
@@ -152,6 +161,7 @@ def test_deduct_money_from_wallet(client):
     assert "Invalid amount" in response.get_json()["error"]
 
 
+@profile
 def test_get_all_customers(client):
     client.post(
         "/customers",

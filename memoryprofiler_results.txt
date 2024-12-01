@@ -1,0 +1,935 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.3.3, pluggy-1.5.0
+rootdir: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun
+collected 21 items
+
+tests/test_customers.py Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_customers.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+     4     61.4 MiB     61.4 MiB           1   @profile
+     5                                         def test_register_customer(client):
+     6     61.4 MiB      0.0 MiB           2       response = client.post(
+     7     61.4 MiB      0.0 MiB           1           "/customers",
+     8     61.4 MiB      0.0 MiB           1           json={
+     9     61.4 MiB      0.0 MiB           1               "fullname": "John Doe",
+    10     61.4 MiB      0.0 MiB           1               "username": "johndoe",
+    11     61.4 MiB      0.0 MiB           1               "password": "password123",
+    12     61.4 MiB      0.0 MiB           1               "age": 30,
+    13     61.4 MiB      0.0 MiB           1               "address": "123 Main St",
+    14     61.4 MiB      0.0 MiB           1               "gender": "M",
+    15     61.4 MiB      0.0 MiB           1               "marital_status": False,
+    16                                                 },
+    17                                             )
+    18     61.4 MiB      0.0 MiB           1       assert response.status_code == 201
+    19     61.4 MiB      0.0 MiB           1       assert response.get_json() == {"message": "Customer registered successfully"}
+    20                                         
+    21     61.4 MiB      0.0 MiB           2       response = client.post(
+    22     61.4 MiB      0.0 MiB           1           "/customers",
+    23     61.4 MiB      0.0 MiB           1           json={
+    24     61.4 MiB      0.0 MiB           1               "username": "janedoe",
+    25     61.4 MiB      0.0 MiB           1               "password": "password123",
+    26                                                 },
+    27                                             )
+    28     61.4 MiB      0.0 MiB           1       assert response.status_code == 400
+    29     61.4 MiB      0.0 MiB           2       assert (
+    30                                                 "fullname, username, and password are required" in response.get_json()["error"]
+    31     61.4 MiB      0.0 MiB           1       )
+    32                                         
+    33     61.4 MiB      0.0 MiB           2       response = client.post(
+    34     61.4 MiB      0.0 MiB           1           "/customers",
+    35     61.4 MiB      0.0 MiB           1           json={
+    36     61.4 MiB      0.0 MiB           1               "fullname": "John Smith",
+    37     61.4 MiB      0.0 MiB           1               "username": "johndoe",
+    38     61.4 MiB      0.0 MiB           1               "password": "password123",
+    39                                                 },
+    40                                             )
+    41     61.4 MiB      0.0 MiB           1       assert response.status_code == 409
+    42     61.4 MiB      0.0 MiB           1       assert response.get_json() == {"error": "Username is already taken"}
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_customers.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    45     61.4 MiB     61.4 MiB           1   @profile
+    46                                         def test_get_customer_by_username(client):
+    47     61.4 MiB      0.0 MiB           2       client.post(
+    48     61.4 MiB      0.0 MiB           1           "/customers",
+    49     61.4 MiB      0.0 MiB           1           json={
+    50     61.4 MiB      0.0 MiB           1               "fullname": "Alice Smith",
+    51     61.4 MiB      0.0 MiB           1               "username": "alicesmith",
+    52     61.4 MiB      0.0 MiB           1               "password": "password123",
+    53                                                 },
+    54                                             )
+    55                                         
+    56     61.4 MiB      0.0 MiB           1       response = client.get("/customers/alicesmith")
+    57     61.4 MiB      0.0 MiB           1       assert response.status_code == 200
+    58     61.4 MiB      0.0 MiB           1       data = response.get_json()
+    59     61.4 MiB      0.0 MiB           1       assert data["username"] == "alicesmith"
+    60     61.4 MiB      0.0 MiB           1       assert data["fullname"] == "Alice Smith"
+    61                                         
+    62     61.4 MiB      0.0 MiB           1       response = client.get("/customers/nonexistent")
+    63     61.4 MiB      0.0 MiB           1       assert response.status_code == 404
+    64     61.4 MiB      0.0 MiB           1       assert response.get_json() == {"error": "Customer not found"}
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_customers.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    67     61.4 MiB     61.4 MiB           1   @profile
+    68                                         def test_delete_customer(client):
+    69     61.4 MiB      0.0 MiB           2       client.post(
+    70     61.4 MiB      0.0 MiB           1           "/customers",
+    71     61.4 MiB      0.0 MiB           1           json={
+    72     61.4 MiB      0.0 MiB           1               "fullname": "Bob Johnson",
+    73     61.4 MiB      0.0 MiB           1               "username": "bobjohnson",
+    74     61.4 MiB      0.0 MiB           1               "password": "password123",
+    75                                                 },
+    76                                             )
+    77                                         
+    78     61.4 MiB      0.0 MiB           1       response = client.delete("/customers/bobjohnson")
+    79     61.4 MiB      0.0 MiB           1       assert response.status_code == 200
+    80     61.4 MiB      0.0 MiB           2       assert response.get_json() == {
+    81                                                 "message": "Customer 'bobjohnson' deleted successfully"
+    82     61.4 MiB      0.0 MiB           1       }
+    83                                         
+    84     61.4 MiB      0.0 MiB           1       response = client.get("/customers/bobjohnson")
+    85     61.4 MiB      0.0 MiB           1       assert response.status_code == 404
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_customers.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    88     61.4 MiB     61.4 MiB           1   @profile
+    89                                         def test_update_customer(client):
+    90     61.4 MiB      0.0 MiB           2       client.post(
+    91     61.4 MiB      0.0 MiB           1           "/customers",
+    92     61.4 MiB      0.0 MiB           1           json={
+    93     61.4 MiB      0.0 MiB           1               "fullname": "Charlie Brown",
+    94     61.4 MiB      0.0 MiB           1               "username": "charliebrown",
+    95     61.4 MiB      0.0 MiB           1               "password": "password123",
+    96                                                 },
+    97                                             )
+    98                                         
+    99     61.4 MiB      0.0 MiB           2       response = client.put(
+   100     61.4 MiB      0.0 MiB           1           "/customers/charliebrown",
+   101     61.4 MiB      0.0 MiB           1           json={
+   102     61.4 MiB      0.0 MiB           1               "age": 28,
+   103     61.4 MiB      0.0 MiB           1               "address": "456 Elm St",
+   104                                                 },
+   105                                             )
+   106     61.4 MiB      0.0 MiB           1       assert response.status_code == 200
+   107     61.4 MiB      0.0 MiB           2       assert response.get_json() == {
+   108                                                 "message": "Customer 'charliebrown' updated successfully"
+   109     61.4 MiB      0.0 MiB           1       }
+   110                                         
+   111     61.4 MiB      0.0 MiB           1       response = client.get("/customers/charliebrown")
+   112     61.4 MiB      0.0 MiB           1       assert response.status_code == 200
+   113     61.4 MiB      0.0 MiB           1       data = response.get_json()
+   114     61.4 MiB      0.0 MiB           1       assert data["age"] == 28
+   115     61.4 MiB      0.0 MiB           1       assert data["address"] == "456 Elm St"
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_customers.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   118     61.4 MiB     61.4 MiB           1   @profile
+   119                                         def test_charge_customer_wallet(client):
+   120     61.4 MiB      0.0 MiB           2       client.post(
+   121     61.4 MiB      0.0 MiB           1           "/customers",
+   122     61.4 MiB      0.0 MiB           1           json={
+   123     61.4 MiB      0.0 MiB           1               "fullname": "Diana Prince",
+   124     61.4 MiB      0.0 MiB           1               "username": "wonderwoman",
+   125     61.4 MiB      0.0 MiB           1               "password": "password123",
+   126     61.4 MiB      0.0 MiB           1               "wallet_balance": 100,
+   127                                                 },
+   128                                             )
+   129                                         
+   130     61.4 MiB      0.0 MiB           1       response = client.post("/customers/wonderwoman/charge", json={"amount": 50})
+   131     61.4 MiB      0.0 MiB           1       assert response.status_code == 200
+   132     61.4 MiB      0.0 MiB           1       data = response.get_json()
+   133     61.4 MiB      0.0 MiB           1       assert data["message"] == "Wallet charged successfully"
+   134     61.4 MiB      0.0 MiB           1       assert int(data["new_balance"]) == 150
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_customers.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   137     61.4 MiB     61.4 MiB           1   @profile
+   138                                         def test_deduct_money_from_wallet(client):
+   139     61.4 MiB      0.0 MiB           2       client.post(
+   140     61.4 MiB      0.0 MiB           1           "/customers",
+   141     61.4 MiB      0.0 MiB           1           json={
+   142     61.4 MiB      0.0 MiB           1               "fullname": "Bruce Wayne",
+   143     61.4 MiB      0.0 MiB           1               "username": "batman",
+   144     61.4 MiB      0.0 MiB           1               "password": "password123",
+   145     61.4 MiB      0.0 MiB           1               "wallet_balance": 200,
+   146                                                 },
+   147                                             )
+   148                                         
+   149     63.0 MiB      1.5 MiB           1       response = client.post("/customers/batman/deduct", json={"amount": 50})
+   150     63.0 MiB      0.0 MiB           1       assert response.status_code == 200
+   151     63.0 MiB      0.0 MiB           1       data = response.get_json()
+   152     63.0 MiB      0.0 MiB           1       assert data["message"] == "Amount deducted successfully"
+   153     63.0 MiB      0.0 MiB           1       assert int(data["new_balance"]) == 150
+   154                                         
+   155     63.0 MiB      0.0 MiB           1       response = client.post("/customers/batman/deduct", json={"amount": 300})
+   156     63.0 MiB      0.0 MiB           1       assert response.status_code == 400
+   157     63.0 MiB      0.0 MiB           1       assert response.get_json() == {"error": "Insufficient funds"}
+   158                                         
+   159     63.0 MiB      0.0 MiB           1       response = client.post("/customers/batman/deduct", json={"amount": -10})
+   160     63.0 MiB      0.0 MiB           1       assert response.status_code == 400
+   161     63.0 MiB      0.0 MiB           1       assert "Invalid amount" in response.get_json()["error"]
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_customers.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   164     63.0 MiB     63.0 MiB           1   @profile
+   165                                         def test_get_all_customers(client):
+   166     63.0 MiB      0.0 MiB           2       client.post(
+   167     63.0 MiB      0.0 MiB           1           "/customers",
+   168     63.0 MiB      0.0 MiB           1           json={
+   169     63.0 MiB      0.0 MiB           1               "fullname": "Clark Kent",
+   170     63.0 MiB      0.0 MiB           1               "username": "superman",
+   171     63.0 MiB      0.0 MiB           1               "password": "password123",
+   172                                                 },
+   173                                             )
+   174     63.0 MiB      0.0 MiB           2       client.post(
+   175     63.0 MiB      0.0 MiB           1           "/customers",
+   176     63.0 MiB      0.0 MiB           1           json={
+   177     63.0 MiB      0.0 MiB           1               "fullname": "Hal Jordan",
+   178     63.0 MiB      0.0 MiB           1               "username": "greenlantern",
+   179     63.0 MiB      0.0 MiB           1               "password": "password123",
+   180                                                 },
+   181                                             )
+   182                                         
+   183     63.0 MiB      0.0 MiB           1       response = client.get("/customers")
+   184     63.0 MiB      0.0 MiB           1       assert response.status_code == 200
+   185     63.0 MiB      0.0 MiB           1       data = response.get_json()
+   186     63.0 MiB      0.0 MiB           1       assert len(data) == 2
+   187     63.0 MiB      0.0 MiB           3       usernames = [customer["username"] for customer in data]
+   188     63.0 MiB      0.0 MiB           1       assert "superman" in usernames
+   189     63.0 MiB      0.0 MiB           1       assert "greenlantern" in usernames
+
+
+.
+tests/test_inventory.py Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_inventory.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+     4     63.0 MiB     63.0 MiB           1   @profile
+     5                                         def test_add_goods(client):
+     6     63.0 MiB      0.0 MiB           2       response = client.post(
+     7     63.0 MiB      0.0 MiB           1           "/inventory",
+     8     63.0 MiB      0.0 MiB           1           json={
+     9     63.0 MiB      0.0 MiB           1               "name": "Apple iPhone",
+    10     63.0 MiB      0.0 MiB           1               "category": "electronics",
+    11     63.0 MiB      0.0 MiB           1               "price_per_item": 999.99,
+    12     63.0 MiB      0.0 MiB           1               "description": "Latest model",
+    13     63.0 MiB      0.0 MiB           1               "count_in_stock": 10,
+    14                                                 },
+    15                                             )
+    16     63.0 MiB      0.0 MiB           1       assert response.status_code == 201
+    17     63.0 MiB      0.0 MiB           1       data = response.get_json()
+    18     63.0 MiB      0.0 MiB           1       assert data["message"] == "Item added successfully"
+    19     63.0 MiB      0.0 MiB           1       assert "id" in data
+    20                                         
+    21     63.0 MiB      0.0 MiB           2       response = client.post(
+    22     63.0 MiB      0.0 MiB           1           "/inventory",
+    23     63.0 MiB      0.0 MiB           1           json={
+    24     63.0 MiB      0.0 MiB           1               "category": "electronics",
+    25     63.0 MiB      0.0 MiB           1               "price_per_item": 999.99,
+    26     63.0 MiB      0.0 MiB           1               "count_in_stock": 10,
+    27                                                 },
+    28                                             )
+    29     63.0 MiB      0.0 MiB           1       assert response.status_code == 400
+    30     63.0 MiB      0.0 MiB           1       assert "Missing required fields" in response.get_json()["error"]
+    31                                         
+    32     63.0 MiB      0.0 MiB           2       response = client.post(
+    33     63.0 MiB      0.0 MiB           1           "/inventory",
+    34     63.0 MiB      0.0 MiB           1           json={
+    35     63.0 MiB      0.0 MiB           1               "name": "Orange",
+    36     63.0 MiB      0.0 MiB           1               "category": "fruits",
+    37     63.0 MiB      0.0 MiB           1               "price_per_item": 1.99,
+    38     63.0 MiB      0.0 MiB           1               "count_in_stock": 100,
+    39                                                 },
+    40                                             )
+    41     63.0 MiB      0.0 MiB           1       assert response.status_code == 400
+    42     63.0 MiB      0.0 MiB           1       assert "Invalid category" in response.get_json()["error"]
+    43                                         
+    44     63.0 MiB      0.0 MiB           2       response = client.post(
+    45     63.0 MiB      0.0 MiB           1           "/inventory",
+    46     63.0 MiB      0.0 MiB           1           json={
+    47     63.0 MiB      0.0 MiB           1               "name": "Faulty Item",
+    48     63.0 MiB      0.0 MiB           1               "category": "electronics",
+    49     63.0 MiB      0.0 MiB           1               "price_per_item": -50,
+    50     63.0 MiB      0.0 MiB           1               "count_in_stock": 5,
+    51                                                 },
+    52                                             )
+    53     63.0 MiB      0.0 MiB           1       assert response.status_code == 400
+    54     63.0 MiB      0.0 MiB           2       assert (
+    55                                                 "Price and count_in_stock must be non-negative" in response.get_json()["error"]
+    56     63.0 MiB      0.0 MiB           1       )
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_inventory.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    59     63.0 MiB     63.0 MiB           1   @profile
+    60                                         def test_deduct_goods(client):
+    61     63.0 MiB      0.0 MiB           2       response = client.post(
+    62     63.0 MiB      0.0 MiB           1           "/inventory",
+    63     63.0 MiB      0.0 MiB           1           json={
+    64     63.0 MiB      0.0 MiB           1               "name": "Samsung TV",
+    65     63.0 MiB      0.0 MiB           1               "category": "electronics",
+    66     63.0 MiB      0.0 MiB           1               "price_per_item": 499.99,
+    67     63.0 MiB      0.0 MiB           1               "count_in_stock": 5,
+    68                                                 },
+    69                                             )
+    70     63.0 MiB      0.0 MiB           1       item_id = response.get_json()["id"]
+    71                                         
+    72     63.0 MiB      0.0 MiB           1       response = client.patch(f"/inventory/{item_id}/deduct", json={"quantity": 2})
+    73     63.0 MiB      0.0 MiB           1       assert response.status_code == 200
+    74     63.0 MiB      0.0 MiB           1       assert response.get_json() == {"message": "Stock deducted successfully"}
+    75                                         
+    76     63.0 MiB      0.0 MiB           1       response = client.patch(f"/inventory/{item_id}/deduct", json={"quantity": 10})
+    77     63.0 MiB      0.0 MiB           1       assert response.status_code == 400
+    78     63.0 MiB      0.0 MiB           1       assert "Not enough stock available" in response.get_json()["error"]
+    79                                         
+    80     63.0 MiB      0.0 MiB           1       response = client.patch(f"/inventory/{item_id}/deduct", json={"quantity": -1})
+    81     63.0 MiB      0.0 MiB           1       assert response.status_code == 400
+    82     63.0 MiB      0.0 MiB           1       assert "Invalid quantity" in response.get_json()["error"]
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_inventory.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    85     63.0 MiB     63.0 MiB           1   @profile
+    86                                         def test_update_goods(client):
+    87     63.0 MiB      0.0 MiB           2       response = client.post(
+    88     63.0 MiB      0.0 MiB           1           "/inventory",
+    89     63.0 MiB      0.0 MiB           1           json={
+    90     63.0 MiB      0.0 MiB           1               "name": "Nike Shoes",
+    91     63.0 MiB      0.0 MiB           1               "category": "clothes",
+    92     63.0 MiB      0.0 MiB           1               "price_per_item": 79.99,
+    93     63.0 MiB      0.0 MiB           1               "count_in_stock": 50,
+    94                                                 },
+    95                                             )
+    96     63.0 MiB      0.0 MiB           1       item_id = response.get_json()["id"]
+    97                                         
+    98     63.0 MiB      0.0 MiB           2       response = client.put(
+    99     63.0 MiB      0.0 MiB           1           f"/inventory/{item_id}", json={"price_per_item": 69.99, "count_in_stock": 45}
+   100                                             )
+   101     63.0 MiB      0.0 MiB           1       assert response.status_code == 200
+   102     63.0 MiB      0.0 MiB           1       data = response.get_json()
+   103     63.0 MiB      0.0 MiB           1       assert data["message"] == "Item updated successfully"
+   104     63.0 MiB      0.0 MiB           1       assert data["id"] == item_id
+   105                                         
+   106     63.0 MiB      0.0 MiB           1       response = client.put(f"/inventory/{item_id}", json={"category": "vehicles"})
+   107     63.0 MiB      0.0 MiB           1       assert response.status_code == 400
+   108     63.0 MiB      0.0 MiB           1       assert "Invalid category" in response.get_json()["error"]
+   109                                         
+   110     63.0 MiB      0.0 MiB           1       response = client.put(f"/inventory/9999", json={"price_per_item": 59.99})
+   111     63.0 MiB      0.0 MiB           1       assert response.status_code == 404
+   112     63.0 MiB      0.0 MiB           1       assert "Item not found" in response.get_json()["error"]
+
+
+.
+tests/test_reviews.py Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_reviews.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+     4     63.0 MiB     63.0 MiB           1   @profile
+     5                                         def test_submit_review(client):
+     6     63.0 MiB      0.0 MiB           2       client.post(
+     7     63.0 MiB      0.0 MiB           1           "/customers",
+     8     63.0 MiB      0.0 MiB           1           json={
+     9     63.0 MiB      0.0 MiB           1               "fullname": "Grace Hopper",
+    10     63.0 MiB      0.0 MiB           1               "username": "ghopper",
+    11     63.0 MiB      0.0 MiB           1               "password": "password123",
+    12                                                 },
+    13                                             )
+    14                                         
+    15     63.0 MiB      0.0 MiB           2       response = client.post(
+    16     63.0 MiB      0.0 MiB           1           "/inventory",
+    17     63.0 MiB      0.0 MiB           1           json={
+    18     63.0 MiB      0.0 MiB           1               "name": "USB Cable",
+    19     63.0 MiB      0.0 MiB           1               "category": "electronics",
+    20     63.0 MiB      0.0 MiB           1               "price_per_item": 5.99,
+    21     63.0 MiB      0.0 MiB           1               "count_in_stock": 100,
+    22                                                 },
+    23                                             )
+    24     63.0 MiB      0.0 MiB           1       item_id = response.get_json()["id"]
+    25                                         
+    26     63.0 MiB      0.0 MiB           2       response = client.post(
+    27     63.0 MiB      0.0 MiB           1           "/reviews",
+    28     63.0 MiB      0.0 MiB           1           json={
+    29     63.0 MiB      0.0 MiB           1               "item_id": item_id,
+    30     63.0 MiB      0.0 MiB           1               "rating": 5,
+    31     63.0 MiB      0.0 MiB           1               "comment": "Excellent quality!",
+    32                                                 },
+    33     63.0 MiB      0.0 MiB           1           headers={"Username": "ghopper", "Password": "password123"},
+    34                                             )
+    35     63.0 MiB      0.0 MiB           1       assert response.status_code == 201
+    36     63.0 MiB      0.0 MiB           1       data = response.get_json()
+    37     63.0 MiB      0.0 MiB           1       assert data["message"] == "Review submitted successfully"
+    38     63.0 MiB      0.0 MiB           1       assert "review_id" in data
+    39                                         
+    40     63.0 MiB      0.0 MiB           2       response = client.post(
+    41     63.0 MiB      0.0 MiB           1           "/reviews",
+    42     63.0 MiB      0.0 MiB           1           json={"item_id": item_id},
+    43     63.0 MiB      0.0 MiB           1           headers={"Username": "ghopper", "Password": "password123"},
+    44                                             )
+    45     63.0 MiB      0.0 MiB           1       assert response.status_code == 400
+    46     63.0 MiB      0.0 MiB           1       assert "item_id and rating are required" in response.get_json()["error"]
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_reviews.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    49     63.0 MiB     63.0 MiB           1   @profile
+    50                                         def test_update_review(client):
+    51     63.0 MiB      0.0 MiB           2       client.post(
+    52     63.0 MiB      0.0 MiB           1           "/customers",
+    53     63.0 MiB      0.0 MiB           1           json={
+    54     63.0 MiB      0.0 MiB           1               "fullname": "Ada Lovelace",
+    55     63.0 MiB      0.0 MiB           1               "username": "alovelace",
+    56     63.0 MiB      0.0 MiB           1               "password": "password123",
+    57                                                 },
+    58                                             )
+    59                                         
+    60     63.0 MiB      0.0 MiB           2       response = client.post(
+    61     63.0 MiB      0.0 MiB           1           "/inventory",
+    62     63.0 MiB      0.0 MiB           1           json={
+    63     63.0 MiB      0.0 MiB           1               "name": "Keyboard",
+    64     63.0 MiB      0.0 MiB           1               "category": "electronics",
+    65     63.0 MiB      0.0 MiB           1               "price_per_item": 49.99,
+    66     63.0 MiB      0.0 MiB           1               "count_in_stock": 50,
+    67                                                 },
+    68                                             )
+    69     63.0 MiB      0.0 MiB           1       item_id = response.get_json()["id"]
+    70                                         
+    71     63.0 MiB      0.0 MiB           2       response = client.post(
+    72     63.0 MiB      0.0 MiB           1           "/reviews",
+    73     63.0 MiB      0.0 MiB           1           json={
+    74     63.0 MiB      0.0 MiB           1               "item_id": item_id,
+    75     63.0 MiB      0.0 MiB           1               "rating": 4,
+    76     63.0 MiB      0.0 MiB           1               "comment": "Good keyboard.",
+    77                                                 },
+    78     63.0 MiB      0.0 MiB           1           headers={"Username": "alovelace", "Password": "password123"},
+    79                                             )
+    80     63.0 MiB      0.0 MiB           1       review_id = response.get_json()["review_id"]
+    81                                         
+    82     63.0 MiB      0.0 MiB           2       response = client.put(
+    83     63.0 MiB      0.0 MiB           1           f"/reviews/{review_id}",
+    84     63.0 MiB      0.0 MiB           1           json={"rating": 5, "comment": "Great keyboard!"},
+    85     63.0 MiB      0.0 MiB           1           headers={"Username": "alovelace", "Password": "password123"},
+    86                                             )
+    87     63.0 MiB      0.0 MiB           1       assert response.status_code == 200
+    88     63.0 MiB      0.0 MiB           1       assert response.get_json()["message"] == "Review updated successfully"
+    89                                         
+    90     63.0 MiB      0.0 MiB           2       response = client.put(
+    91     63.0 MiB      0.0 MiB           1           f"/reviews/{review_id}",
+    92     63.0 MiB      0.0 MiB           1           json={"rating": 6},
+    93     63.0 MiB      0.0 MiB           1           headers={"Username": "alovelace", "Password": "password123"},
+    94                                             )
+    95     63.0 MiB      0.0 MiB           1       assert response.status_code == 400
+    96     63.0 MiB      0.0 MiB           1       assert "Rating must be between 1 and 5" in response.get_json()["error"]
+    97                                         
+    98     63.0 MiB      0.0 MiB           2       response = client.put(
+    99     63.0 MiB      0.0 MiB           1           f"/reviews/{review_id}",
+   100     63.0 MiB      0.0 MiB           1           json={"rating": 3},
+   101     63.0 MiB      0.0 MiB           1           headers={"Username": "someoneelse", "Password": "wrongpassword"},
+   102                                             )
+   103     63.0 MiB      0.0 MiB           1       assert response.status_code == 401
+   104     63.0 MiB      0.0 MiB           1       assert "Unauthorized, invalid username or password" in response.get_json()["error"]
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_reviews.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   107     63.0 MiB     63.0 MiB           1   @profile
+   108                                         def test_delete_review(client):
+   109     63.0 MiB      0.0 MiB           2       client.post(
+   110     63.0 MiB      0.0 MiB           1           "/customers",
+   111     63.0 MiB      0.0 MiB           1           json={
+   112     63.0 MiB      0.0 MiB           1               "fullname": "Linus Torvalds",
+   113     63.0 MiB      0.0 MiB           1               "username": "ltorvalds",
+   114     63.0 MiB      0.0 MiB           1               "password": "password123",
+   115                                                 },
+   116                                             )
+   117                                         
+   118     63.0 MiB      0.0 MiB           2       response = client.post(
+   119     63.0 MiB      0.0 MiB           1           "/inventory",
+   120     63.0 MiB      0.0 MiB           1           json={
+   121     63.0 MiB      0.0 MiB           1               "name": "Monitor",
+   122     63.0 MiB      0.0 MiB           1               "category": "electronics",
+   123     63.0 MiB      0.0 MiB           1               "price_per_item": 199.99,
+   124     63.0 MiB      0.0 MiB           1               "count_in_stock": 20,
+   125                                                 },
+   126                                             )
+   127     63.0 MiB      0.0 MiB           1       item_id = response.get_json()["id"]
+   128                                         
+   129     63.0 MiB      0.0 MiB           2       response = client.post(
+   130     63.0 MiB      0.0 MiB           1           "/reviews",
+   131     63.0 MiB      0.0 MiB           1           json={
+   132     63.0 MiB      0.0 MiB           1               "item_id": item_id,
+   133     63.0 MiB      0.0 MiB           1               "rating": 3,
+   134     63.0 MiB      0.0 MiB           1               "comment": "Average monitor.",
+   135                                                 },
+   136     63.0 MiB      0.0 MiB           1           headers={"Username": "ltorvalds", "Password": "password123"},
+   137                                             )
+   138     63.0 MiB      0.0 MiB           1       review_id = response.get_json()["review_id"]
+   139                                         
+   140     63.0 MiB      0.0 MiB           2       response = client.delete(
+   141     63.0 MiB      0.0 MiB           1           f"/reviews/{review_id}",
+   142     63.0 MiB      0.0 MiB           1           json={"username": "ltorvalds"},
+   143     63.0 MiB      0.0 MiB           1           headers={"Username": "ltorvalds", "Password": "password123"},
+   144                                             )
+   145     63.0 MiB      0.0 MiB           1       assert response.status_code == 200
+   146     63.0 MiB      0.0 MiB           1       assert response.get_json()["message"] == "Review deleted successfully"
+   147                                         
+   148     63.0 MiB      0.0 MiB           1       response = client.get(f"/reviews/{review_id}")
+   149     63.0 MiB      0.0 MiB           1       assert response.status_code == 404
+   150     63.0 MiB      0.0 MiB           1       assert "Review not found" in response.get_json()["error"]
+   151                                         
+   152     63.0 MiB      0.0 MiB           2       response = client.delete(
+   153     63.0 MiB      0.0 MiB           1           f"/reviews/{review_id}",
+   154     63.0 MiB      0.0 MiB           1           json={"username": "ltorvalds"},
+   155     63.0 MiB      0.0 MiB           1           headers={"Username": "someoneelse", "Password": "wrongpassword"},
+   156                                             )
+   157     63.0 MiB      0.0 MiB           1       assert response.status_code == 401
+   158     63.0 MiB      0.0 MiB           1       assert "Unauthorized, invalid username or password" in response.get_json()["error"]
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_reviews.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   161     63.0 MiB     63.0 MiB           1   @profile
+   162                                         def test_get_product_reviews(client):
+   163     63.0 MiB      0.0 MiB           2       client.post(
+   164     63.0 MiB      0.0 MiB           1           "/customers",
+   165     63.0 MiB      0.0 MiB           1           json={
+   166     63.0 MiB      0.0 MiB           1               "fullname": "Alan Turing",
+   167     63.0 MiB      0.0 MiB           1               "username": "aturing",
+   168     63.0 MiB      0.0 MiB           1               "password": "password123",
+   169                                                 },
+   170                                             )
+   171     63.0 MiB      0.0 MiB           2       client.post(
+   172     63.0 MiB      0.0 MiB           1           "/customers",
+   173     63.0 MiB      0.0 MiB           1           json={
+   174     63.0 MiB      0.0 MiB           1               "fullname": "Katherine Johnson",
+   175     63.0 MiB      0.0 MiB           1               "username": "kjohnson",
+   176     63.0 MiB      0.0 MiB           1               "password": "password123",
+   177                                                 },
+   178                                             )
+   179     63.0 MiB      0.0 MiB           2       response = client.post(
+   180     63.0 MiB      0.0 MiB           1           "/inventory",
+   181     63.0 MiB      0.0 MiB           1           json={
+   182     63.0 MiB      0.0 MiB           1               "name": "Laptop",
+   183     63.0 MiB      0.0 MiB           1               "category": "electronics",
+   184     63.0 MiB      0.0 MiB           1               "price_per_item": 999.99,
+   185     63.0 MiB      0.0 MiB           1               "count_in_stock": 10,
+   186                                                 },
+   187                                             )
+   188     63.0 MiB      0.0 MiB           1       item_id = response.get_json()["id"]
+   189                                         
+   190     63.0 MiB      0.0 MiB           2       response = client.post(
+   191     63.0 MiB      0.0 MiB           1           "/reviews",
+   192     63.0 MiB      0.0 MiB           1           json={
+   193     63.0 MiB      0.0 MiB           1               "item_id": item_id,
+   194     63.0 MiB      0.0 MiB           1               "rating": 5,
+   195     63.0 MiB      0.0 MiB           1               "comment": "Fantastic laptop!",
+   196                                                 },
+   197     63.0 MiB      0.0 MiB           1           headers={"Username": "aturing", "Password": "password123"},
+   198                                             )
+   199     63.0 MiB      0.0 MiB           1       review_id1 = response.get_json().get("review_id")
+   200     63.0 MiB      0.0 MiB           2       response = client.post(
+   201     63.0 MiB      0.0 MiB           1           "/reviews",
+   202     63.0 MiB      0.0 MiB           1           json={
+   203     63.0 MiB      0.0 MiB           1               "item_id": item_id,
+   204     63.0 MiB      0.0 MiB           1               "rating": 4,
+   205     63.0 MiB      0.0 MiB           1               "comment": "Very good performance.",
+   206                                                 },
+   207     63.0 MiB      0.0 MiB           1           headers={"Username": "kjohnson", "Password": "password123"},
+   208                                             )
+   209     63.0 MiB      0.0 MiB           1       review_id2 = response.get_json().get("review_id")
+   210                                         
+   211     63.0 MiB      0.0 MiB           1       client.patch(f"/reviews/{review_id1}/moderate", json={"is_approved": True})
+   212     63.0 MiB      0.0 MiB           1       client.patch(f"/reviews/{review_id2}/moderate", json={"is_approved": True})
+   213                                         
+   214     63.0 MiB      0.0 MiB           1       response = client.get(f"/reviews/product/{item_id}")
+   215     63.0 MiB      0.0 MiB           1       assert response.status_code == 200
+   216     63.0 MiB      0.0 MiB           1       data = response.get_json()
+   217     63.0 MiB      0.0 MiB           1       assert len(data) == 2
+   218     63.0 MiB      0.0 MiB           3       usernames = [review["username"] for review in data]
+   219     63.0 MiB      0.0 MiB           1       assert "aturing" in usernames
+   220     63.0 MiB      0.0 MiB           1       assert "kjohnson" in usernames
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_reviews.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   223     63.2 MiB     63.2 MiB           1   @profile
+   224                                         def test_get_customer_reviews(client):
+   225     63.2 MiB      0.0 MiB           2       client.post(
+   226     63.2 MiB      0.0 MiB           1           "/customers",
+   227     63.2 MiB      0.0 MiB           1           json={
+   228     63.2 MiB      0.0 MiB           1               "fullname": "Margaret Hamilton",
+   229     63.2 MiB      0.0 MiB           1               "username": "mhamilton",
+   230     63.2 MiB      0.0 MiB           1               "password": "password123",
+   231                                                 },
+   232                                             )
+   233     63.2 MiB      0.0 MiB           2       response = client.post(
+   234     63.2 MiB      0.0 MiB           1           "/inventory",
+   235     63.2 MiB      0.0 MiB           1           json={
+   236     63.2 MiB      0.0 MiB           1               "name": "Smartphone",
+   237     63.2 MiB      0.0 MiB           1               "category": "electronics",
+   238     63.2 MiB      0.0 MiB           1               "price_per_item": 799.99,
+   239     63.2 MiB      0.0 MiB           1               "count_in_stock": 15,
+   240                                                 },
+   241                                             )
+   242     63.2 MiB      0.0 MiB           1       item_id1 = response.get_json()["id"]
+   243     63.2 MiB      0.0 MiB           2       response = client.post(
+   244     63.2 MiB      0.0 MiB           1           "/inventory",
+   245     63.2 MiB      0.0 MiB           1           json={
+   246     63.2 MiB      0.0 MiB           1               "name": "Tablet",
+   247     63.2 MiB      0.0 MiB           1               "category": "electronics",
+   248     63.2 MiB      0.0 MiB           1               "price_per_item": 499.99,
+   249     63.2 MiB      0.0 MiB           1               "count_in_stock": 20,
+   250                                                 },
+   251                                             )
+   252     63.2 MiB      0.0 MiB           1       item_id2 = response.get_json()["id"]
+   253                                         
+   254     63.2 MiB      0.0 MiB           2       response = client.post(
+   255     63.2 MiB      0.0 MiB           1           "/reviews",
+   256     63.2 MiB      0.0 MiB           1           json={
+   257     63.2 MiB      0.0 MiB           1               "item_id": item_id1,
+   258     63.2 MiB      0.0 MiB           1               "rating": 4,
+   259     63.2 MiB      0.0 MiB           1               "comment": "Good smartphone.",
+   260                                                 },
+   261     63.2 MiB      0.0 MiB           1           headers={"Username": "mhamilton", "Password": "password123"},
+   262                                             )
+   263     63.2 MiB      0.0 MiB           2       response = client.post(
+   264     63.2 MiB      0.0 MiB           1           "/reviews",
+   265     63.2 MiB      0.0 MiB           1           json={
+   266     63.2 MiB      0.0 MiB           1               "item_id": item_id2,
+   267     63.2 MiB      0.0 MiB           1               "rating": 5,
+   268     63.2 MiB      0.0 MiB           1               "comment": "Excellent tablet.",
+   269                                                 },
+   270     63.2 MiB      0.0 MiB           1           headers={"Username": "mhamilton", "Password": "password123"},
+   271                                             )
+   272                                         
+   273     63.2 MiB      0.0 MiB           1       response = client.get("/reviews/customer/mhamilton")
+   274     63.2 MiB      0.0 MiB           1       assert response.status_code == 200
+   275     63.2 MiB      0.0 MiB           1       data = response.get_json()
+   276     63.2 MiB      0.0 MiB           1       assert len(data) == 2
+   277     63.2 MiB      0.0 MiB           3       product_names = [review["product_name"] for review in data]
+   278     63.2 MiB      0.0 MiB           1       assert "Smartphone" in product_names
+   279     63.2 MiB      0.0 MiB           1       assert "Tablet" in product_names
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_reviews.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   282     63.2 MiB     63.2 MiB           1   @profile
+   283                                         def test_moderate_review(client):
+   284     63.2 MiB      0.0 MiB           2       client.post(
+   285     63.2 MiB      0.0 MiB           1           "/customers",
+   286     63.2 MiB      0.0 MiB           1           json={
+   287     63.2 MiB      0.0 MiB           1               "fullname": "Tim Berners-Lee",
+   288     63.2 MiB      0.0 MiB           1               "username": "tbernerslee",
+   289     63.2 MiB      0.0 MiB           1               "password": "password123",
+   290                                                 },
+   291                                             )
+   292     63.2 MiB      0.0 MiB           2       response = client.post(
+   293     63.2 MiB      0.0 MiB           1           "/inventory",
+   294     63.2 MiB      0.0 MiB           1           json={
+   295     63.2 MiB      0.0 MiB           1               "name": "Router",
+   296     63.2 MiB      0.0 MiB           1               "category": "electronics",
+   297     63.2 MiB      0.0 MiB           1               "price_per_item": 129.99,
+   298     63.2 MiB      0.0 MiB           1               "count_in_stock": 25,
+   299                                                 },
+   300                                             )
+   301     63.2 MiB      0.0 MiB           1       item_id = response.get_json()["id"]
+   302     63.2 MiB      0.0 MiB           2       response = client.post(
+   303     63.2 MiB      0.0 MiB           1           "/reviews",
+   304     63.2 MiB      0.0 MiB           1           json={
+   305     63.2 MiB      0.0 MiB           1               "item_id": item_id,
+   306     63.2 MiB      0.0 MiB           1               "rating": 2,
+   307     63.2 MiB      0.0 MiB           1               "comment": "Not satisfied with the performance.",
+   308                                                 },
+   309     63.2 MiB      0.0 MiB           1           headers={"Username": "tbernerslee", "Password": "password123"},
+   310                                             )
+   311     63.2 MiB      0.0 MiB           1       review_id = response.get_json().get("review_id")
+   312                                         
+   313     63.2 MiB      0.0 MiB           2       response = client.patch(
+   314     63.2 MiB      0.0 MiB           1           f"/reviews/{review_id}/moderate", json={"is_approved": True}
+   315                                             )
+   316     63.2 MiB      0.0 MiB           1       assert response.status_code == 200
+   317     63.2 MiB      0.0 MiB           1       assert response.get_json()["message"] == "Review moderation updated"
+   318                                         
+   319     63.2 MiB      0.0 MiB           1       response = client.get(f"/reviews/product/{item_id}")
+   320     63.2 MiB      0.0 MiB           1       assert response.status_code == 200
+   321     63.2 MiB      0.0 MiB           1       data = response.get_json()
+   322     63.2 MiB      0.0 MiB           1       assert len(data) == 1
+   323     63.2 MiB      0.0 MiB           1       assert data[0]["review_id"] == review_id
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_reviews.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   326     63.2 MiB     63.2 MiB           1   @profile
+   327                                         def test_get_review_details(client):
+   328     63.2 MiB      0.0 MiB           2       client.post(
+   329     63.2 MiB      0.0 MiB           1           "/customers",
+   330     63.2 MiB      0.0 MiB           1           json={
+   331     63.2 MiB      0.0 MiB           1               "fullname": "Steve Wozniak",
+   332     63.2 MiB      0.0 MiB           1               "username": "swozniak",
+   333     63.2 MiB      0.0 MiB           1               "password": "password123",
+   334                                                 },
+   335                                             )
+   336     63.2 MiB      0.0 MiB           2       response = client.post(
+   337     63.2 MiB      0.0 MiB           1           "/inventory",
+   338     63.2 MiB      0.0 MiB           1           json={
+   339     63.2 MiB      0.0 MiB           1               "name": "Smartwatch",
+   340     63.2 MiB      0.0 MiB           1               "category": "electronics",
+   341     63.2 MiB      0.0 MiB           1               "price_per_item": 299.99,
+   342     63.2 MiB      0.0 MiB           1               "count_in_stock": 30,
+   343                                                 },
+   344                                             )
+   345     63.2 MiB      0.0 MiB           1       item_id = response.get_json()["id"]
+   346     63.2 MiB      0.0 MiB           2       response = client.post(
+   347     63.2 MiB      0.0 MiB           1           "/reviews",
+   348     63.2 MiB      0.0 MiB           1           json={
+   349     63.2 MiB      0.0 MiB           1               "item_id": item_id,
+   350     63.2 MiB      0.0 MiB           1               "rating": 5,
+   351     63.2 MiB      0.0 MiB           1               "comment": "Love this smartwatch!",
+   352                                                 },
+   353     63.2 MiB      0.0 MiB           1           headers={"Username": "swozniak", "Password": "password123"},
+   354                                             )
+   355     63.2 MiB      0.0 MiB           1       review_id = response.get_json().get("review_id")
+   356                                         
+   357     63.2 MiB      0.0 MiB           1       response = client.get(f"/reviews/{review_id}")
+   358     63.2 MiB      0.0 MiB           1       assert response.status_code == 200
+   359     63.2 MiB      0.0 MiB           1       data = response.get_json()
+   360     63.2 MiB      0.0 MiB           1       assert data["username"] == "swozniak"
+   361     63.2 MiB      0.0 MiB           1       assert data["product_name"] == "Smartwatch"
+   362     63.2 MiB      0.0 MiB           1       assert data["rating"] == 5
+   363     63.2 MiB      0.0 MiB           1       assert data["comment"] == "Love this smartwatch!"
+
+
+.
+tests/test_sales.py Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_sales.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+     4     63.2 MiB     63.2 MiB           1   @profile
+     5                                         def test_display_available_goods(client):
+     6     63.2 MiB      0.0 MiB           2       client.post(
+     7     63.2 MiB      0.0 MiB           1           "/inventory",
+     8     63.2 MiB      0.0 MiB           1           json={
+     9     63.2 MiB      0.0 MiB           1               "name": "Laptop",
+    10     63.2 MiB      0.0 MiB           1               "category": "electronics",
+    11     63.2 MiB      0.0 MiB           1               "price_per_item": 1200.00,
+    12     63.2 MiB      0.0 MiB           1               "count_in_stock": 5,
+    13                                                 },
+    14                                             )
+    15     63.2 MiB      0.0 MiB           2       client.post(
+    16     63.2 MiB      0.0 MiB           1           "/inventory",
+    17     63.2 MiB      0.0 MiB           1           json={
+    18     63.2 MiB      0.0 MiB           1               "name": "Jeans",
+    19     63.2 MiB      0.0 MiB           1               "category": "clothes",
+    20     63.2 MiB      0.0 MiB           1               "price_per_item": 50.00,
+    21     63.2 MiB      0.0 MiB           1               "count_in_stock": 0,
+    22                                                 },
+    23                                             )
+    24     63.2 MiB      0.0 MiB           1       response = client.get("/sales/goods")
+    25     63.2 MiB      0.0 MiB           1       assert response.status_code == 200
+    26     63.2 MiB      0.0 MiB           1       data = response.get_json()
+    27     63.2 MiB      0.0 MiB           1       assert len(data) == 1
+    28     63.2 MiB      0.0 MiB           1       assert data[0]["name"] == "Laptop"
+    29     63.2 MiB      0.0 MiB           1       assert float(data[0]["price_per_item"]) == 1200.00
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_sales.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    32     63.2 MiB     63.2 MiB           1   @profile
+    33                                         def test_get_good_details(client):
+    34     63.2 MiB      0.0 MiB           2       response = client.post(
+    35     63.2 MiB      0.0 MiB           1           "/inventory",
+    36     63.2 MiB      0.0 MiB           1           json={
+    37     63.2 MiB      0.0 MiB           1               "name": "Smartphone",
+    38     63.2 MiB      0.0 MiB           1               "category": "electronics",
+    39     63.2 MiB      0.0 MiB           1               "price_per_item": 800.00,
+    40     63.2 MiB      0.0 MiB           1               "description": "Latest model",
+    41     63.2 MiB      0.0 MiB           1               "count_in_stock": 10,
+    42                                                 },
+    43                                             )
+    44     63.2 MiB      0.0 MiB           1       item_id = response.get_json()["id"]
+    45     63.2 MiB      0.0 MiB           1       response = client.get(f"/sales/goods/{item_id}")
+    46     63.2 MiB      0.0 MiB           1       assert response.status_code == 200
+    47     63.2 MiB      0.0 MiB           1       data = response.get_json()
+    48     63.2 MiB      0.0 MiB           1       assert data["name"] == "Smartphone"
+    49     63.2 MiB      0.0 MiB           1       assert data["description"] == "Latest model"
+    50     63.2 MiB      0.0 MiB           1       assert data["count_in_stock"] == 10
+    51     63.2 MiB      0.0 MiB           1       response = client.get("/sales/goods/9999")
+    52     63.2 MiB      0.0 MiB           1       assert response.status_code == 404
+    53     63.2 MiB      0.0 MiB           1       assert response.get_json() == {"error": "Item not found"}
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_sales.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    56     63.2 MiB     63.2 MiB           1   @profile
+    57                                         def test_make_purchase(client):
+    58     63.2 MiB      0.0 MiB           2       client.post(
+    59     63.2 MiB      0.0 MiB           1           "/customers",
+    60     63.2 MiB      0.0 MiB           1           json={
+    61     63.2 MiB      0.0 MiB           1               "fullname": "Eve Adams",
+    62     63.2 MiB      0.0 MiB           1               "username": "eveadams",
+    63     63.2 MiB      0.0 MiB           1               "password": "password123",
+    64     63.2 MiB      0.0 MiB           1               "wallet_balance": 5000.00,
+    65                                                 },
+    66                                             )
+    67                                         
+    68     63.2 MiB      0.0 MiB           2       response = client.post(
+    69     63.2 MiB      0.0 MiB           1           "/inventory",
+    70     63.2 MiB      0.0 MiB           1           json={
+    71     63.2 MiB      0.0 MiB           1               "name": "Electric Guitar",
+    72     63.2 MiB      0.0 MiB           1               "category": "accessories",
+    73     63.2 MiB      0.0 MiB           1               "price_per_item": 700.00,
+    74     63.2 MiB      0.0 MiB           1               "count_in_stock": 2,
+    75                                                 },
+    76                                             )
+    77     63.2 MiB      0.0 MiB           1       item_id = response.get_json()["id"]
+    78                                         
+    79     63.2 MiB      0.0 MiB           2       response = client.post(
+    80     63.2 MiB      0.0 MiB           1           "/sales/purchase",
+    81     63.2 MiB      0.0 MiB           1           json={"username": "eveadams", "item_id": item_id, "quantity": 1},
+    82                                             )
+    83     63.2 MiB      0.0 MiB           1       assert response.status_code == 200
+    84     63.2 MiB      0.0 MiB           1       assert response.get_json() == {"message": "Purchase successful"}
+    85                                         
+    86     63.2 MiB      0.0 MiB           1       response = client.get("/customers/eveadams")
+    87     63.2 MiB      0.0 MiB           1       assert response.status_code == 200
+    88     63.2 MiB      0.0 MiB           1       customer = response.get_json()
+    89     63.2 MiB      0.0 MiB           1       assert float(customer["wallet_balance"]) == 4300.00
+    90                                         
+    91     63.2 MiB      0.0 MiB           1       response = client.get(f"/sales/goods/{item_id}")
+    92     63.2 MiB      0.0 MiB           1       assert response.status_code == 200
+    93     63.2 MiB      0.0 MiB           1       item = response.get_json()
+    94     63.2 MiB      0.0 MiB           1       assert item["count_in_stock"] == 1
+    95                                         
+    96     63.2 MiB      0.0 MiB           2       response = client.post(
+    97     63.2 MiB      0.0 MiB           1           "/sales/purchase",
+    98     63.2 MiB      0.0 MiB           1           json={"username": "eveadams", "item_id": item_id, "quantity": 5},
+    99                                             )
+   100     63.2 MiB      0.0 MiB           1       assert response.status_code == 400
+   101     63.2 MiB      0.0 MiB           1       assert "Not enough stock available" in response.get_json()["error"]
+   102                                         
+   103     63.2 MiB      0.0 MiB           1       client.post("/customers/eveadams/deduct", json={"amount": 4000})
+   104     63.2 MiB      0.0 MiB           2       response = client.post(
+   105     63.2 MiB      0.0 MiB           1           "/sales/purchase",
+   106     63.2 MiB      0.0 MiB           1           json={"username": "eveadams", "item_id": item_id, "quantity": 1},
+   107                                             )
+   108     63.2 MiB      0.0 MiB           1       assert response.status_code == 400
+   109     63.2 MiB      0.0 MiB           1       assert "Insufficient funds" in response.get_json()["error"]
+   110                                         
+   111     63.2 MiB      0.0 MiB           2       response = client.post(
+   112     63.2 MiB      0.0 MiB           1           "/sales/purchase",
+   113     63.2 MiB      0.0 MiB           1           json={"username": "eveadams", "item_id": item_id, "quantity": -1},
+   114                                             )
+   115     63.2 MiB      0.0 MiB           1       assert response.status_code == 400
+   116     63.2 MiB      0.0 MiB           1       assert "Quantity must be positive" in response.get_json()["error"]
+
+
+.Filename: /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/tests/test_sales.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   119     63.2 MiB     63.2 MiB           1   @profile
+   120                                         def test_get_customer_purchases(client):
+   121     63.2 MiB      0.0 MiB           2       client.post(
+   122     63.2 MiB      0.0 MiB           1           "/customers",
+   123     63.2 MiB      0.0 MiB           1           json={
+   124     63.2 MiB      0.0 MiB           1               "fullname": "Frank Miller",
+   125     63.2 MiB      0.0 MiB           1               "username": "frankmiller",
+   126     63.2 MiB      0.0 MiB           1               "password": "password123",
+   127     63.2 MiB      0.0 MiB           1               "wallet_balance": 1000.00,
+   128                                                 },
+   129                                             )
+   130                                         
+   131     63.2 MiB      0.0 MiB           2       response = client.post(
+   132     63.2 MiB      0.0 MiB           1           "/inventory",
+   133     63.2 MiB      0.0 MiB           1           json={
+   134     63.2 MiB      0.0 MiB           1               "name": "Book A",
+   135     63.2 MiB      0.0 MiB           1               "category": "accessories",
+   136     63.2 MiB      0.0 MiB           1               "price_per_item": 30.00,
+   137     63.2 MiB      0.0 MiB           1               "count_in_stock": 5,
+   138                                                 },
+   139                                             )
+   140     63.2 MiB      0.0 MiB           1       item_id_a = response.get_json()["id"]
+   141     63.2 MiB      0.0 MiB           2       response = client.post(
+   142     63.2 MiB      0.0 MiB           1           "/inventory",
+   143     63.2 MiB      0.0 MiB           1           json={
+   144     63.2 MiB      0.0 MiB           1               "name": "Book B",
+   145     63.2 MiB      0.0 MiB           1               "category": "accessories",
+   146     63.2 MiB      0.0 MiB           1               "price_per_item": 25.00,
+   147     63.2 MiB      0.0 MiB           1               "count_in_stock": 5,
+   148                                                 },
+   149                                             )
+   150     63.2 MiB      0.0 MiB           1       item_id_b = response.get_json()["id"]
+   151                                         
+   152     63.2 MiB      0.0 MiB           2       client.post(
+   153     63.2 MiB      0.0 MiB           1           "/sales/purchase",
+   154     63.2 MiB      0.0 MiB           1           json={"username": "frankmiller", "item_id": item_id_a, "quantity": 2},
+   155                                             )
+   156     63.2 MiB      0.0 MiB           2       client.post(
+   157     63.2 MiB      0.0 MiB           1           "/sales/purchase",
+   158     63.2 MiB      0.0 MiB           1           json={"username": "frankmiller", "item_id": item_id_b, "quantity": 1},
+   159                                             )
+   160                                         
+   161     63.2 MiB      0.0 MiB           1       response = client.get("/sales/customers/frankmiller/purchases")
+   162     63.2 MiB      0.0 MiB           1       assert response.status_code == 200
+   163     63.2 MiB      0.0 MiB           1       data = response.get_json()
+   164     63.2 MiB      0.0 MiB           1       assert len(data) == 2
+   165                                         
+   166     63.2 MiB      0.0 MiB           1       purchase1 = data[0]
+   167     63.2 MiB      0.0 MiB           1       purchase2 = data[1]
+   168     63.2 MiB      0.0 MiB           1       assert purchase1["quantity"] in [1, 2]
+   169     63.2 MiB      0.0 MiB           1       assert purchase1["item"]["name"] in ["Book A", "Book B"]
+   170     63.2 MiB      0.0 MiB           1       assert purchase2["item"]["name"] in ["Book A", "Book B"]
+   171                                         
+   172     63.2 MiB      0.0 MiB           1       response = client.get("/sales/customers/nonexistentuser/purchases")
+   173     63.2 MiB      0.0 MiB           1       assert response.status_code == 404
+   174     63.2 MiB      0.0 MiB           1       assert response.get_json() == {"error": "Customer not found"}
+
+
+.
+
+=============================== warnings summary ===============================
+tests/test_customers.py::test_register_customer
+  /home/bailoun/Projects/EECE435L-FinalProject/ecommerce_MohamadBailoun/venv/lib/python3.12/site-packages/botocore/auth.py:424: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    datetime_now = datetime.datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 21 passed, 1 warning in 8.42s =========================
