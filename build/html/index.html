@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ecommerce_MohamadBailoun documentation &#8212; ecommerce_MohamadBailoun v1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5cb08e4e"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="ecommerce-mohamadbailoun-documentation">
+<h1>ecommerce_MohamadBailoun documentation<a class="headerlink" href="#ecommerce-mohamadbailoun-documentation" title="Link to this heading">¶</a></h1>
+<p>Welcome to the ecommerce documentation! This documentation is automatically generated using Sphinx and reStructuredText.</p>
+</section>
+<section id="api-documentation">
+<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="module-documentation">
+<h1>Module Documentation<a class="headerlink" href="#module-documentation" title="Link to this heading">¶</a></h1>
+<section id="module-common">
+<span id="common-module"></span><h2>Common Module<a class="headerlink" href="#module-common" title="Link to this heading">¶</a></h2>
+<dl class="py function" id="module-common.db">
+<dt class="sig sig-object py" id="common.db.close_db">
+<span class="sig-prename descclassname"><span class="pre">common.db.</span></span><span class="sig-name descname"><span class="pre">close_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#common.db.close_db" title="Link to this definition">¶</a></dt>
+<dd><p>Closes the current database connection stored in Flask’s <cite>g</cite> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>e</strong> (<em>optional</em>) – An exception that may have been raised during request handling.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="common.db.get_db">
+<span class="sig-prename descclassname"><span class="pre">common.db.</span></span><span class="sig-name descname"><span class="pre">get_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#common.db.get_db" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a database connection object, creating a new connection if none exists.</p>
+<p>Uses Flask’s <cite>g</cite> object to store the connection, which is accessible throughout the request lifecycle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A psycopg2 database connection object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>connection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="common.db.get_db_credentials">
+<span class="sig-prename descclassname"><span class="pre">common.db.</span></span><span class="sig-name descname"><span class="pre">get_db_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#common.db.get_db_credentials" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the database credentials (username and password) from the aws secret manager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing the database username and password.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="common.db.get_secret">
+<span class="sig-prename descclassname"><span class="pre">common.db.</span></span><span class="sig-name descname"><span class="pre">get_secret</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#common.db.get_secret" title="Link to this definition">¶</a></dt>
+<dd><p>Fetches the database credentials from AWS Secrets Manager. Caches the result
+to prevent multiple requests for the same secret.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing the secret values, including DB_USER and DB_PASSWORD.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="common.db.init_db_connection">
+<span class="sig-prename descclassname"><span class="pre">common.db.</span></span><span class="sig-name descname"><span class="pre">init_db_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#common.db.init_db_connection" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes a new database connection (used during the setup process) and immediately closes it.</p>
+<p>This function is typically called at the application startup.</p>
+</dd></dl>
+
+</section>
+<section id="module-customers">
+<span id="customers-module"></span><h2>Customers Module<a class="headerlink" href="#module-customers" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="customers.init_customers_service">
+<span class="sig-prename descclassname"><span class="pre">customers.</span></span><span class="sig-name descname"><span class="pre">init_customers_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#customers.init_customers_service" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes the customers service by setting up the database and registering the
+customers blueprint within the provided Flask app context.</p>
+<p>This function performs the following tasks:
+1. Initializes the database connection by calling <cite>init_customers_db</cite>.
+2. Registers the <cite>customers_bp</cite> blueprint, which handles all customer-related routes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>app</strong> (<em>Flask</em>) – The Flask application instance to register the blueprint and initialize the service.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-customers.db">
+<dt class="sig sig-object py" id="customers.db.init_customers_db">
+<span class="sig-prename descclassname"><span class="pre">customers.db.</span></span><span class="sig-name descname"><span class="pre">init_customers_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#customers.db.init_customers_db" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes the ‘customers’ table in the database.</p>
+<p>This function creates the ‘customers’ table if it doesn’t already exist. The table includes the following fields:
+- id (SERIAL PRIMARY KEY)
+- fullname (VARCHAR(50), NOT NULL)
+- username (VARCHAR(50), UNIQUE, NOT NULL)
+- password (VARCHAR(50), NOT NULL)
+- age (INT)
+- address (TEXT)
+- gender (VARCHAR(1))
+- marital_status (BOOLEAN)
+- wallet_balance (NUMERIC, DEFAULT 0)</p>
+<p>This function is called during the setup of the customers service to ensure that the necessary
+database schema is in place.</p>
+</dd></dl>
+
+<dl class="py function" id="module-customers.routes">
+<dt class="sig sig-object py" id="customers.routes.charge_customer_wallet">
+<span class="sig-prename descclassname"><span class="pre">customers.routes.</span></span><span class="sig-name descname"><span class="pre">charge_customer_wallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#customers.routes.charge_customer_wallet" title="Link to this definition">¶</a></dt>
+<dd><p>Charges a customer’s wallet with a specified amount.
+Validates that the amount is positive. Returns the new wallet balance or an error message if invalid.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="customers.routes.deduct_money_from_wallet">
+<span class="sig-prename descclassname"><span class="pre">customers.routes.</span></span><span class="sig-name descname"><span class="pre">deduct_money_from_wallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#customers.routes.deduct_money_from_wallet" title="Link to this definition">¶</a></dt>
+<dd><p>Deducts money from a customer’s wallet.
+Ensures the amount is positive and that the customer has sufficient funds. Returns the new balance or an error message if there are insufficient funds.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="customers.routes.delete_customer">
+<span class="sig-prename descclassname"><span class="pre">customers.routes.</span></span><span class="sig-name descname"><span class="pre">delete_customer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#customers.routes.delete_customer" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes a customer from the database by username.
+Returns a success message if the deletion is successful, or an error message if the customer is not found.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="customers.routes.get_all_customers">
+<span class="sig-prename descclassname"><span class="pre">customers.routes.</span></span><span class="sig-name descname"><span class="pre">get_all_customers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#customers.routes.get_all_customers" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all customers and their information.
+Returns a list of all customers’ details in JSON format or an error message if there is an issue fetching the data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="customers.routes.get_customer_by_username">
+<span class="sig-prename descclassname"><span class="pre">customers.routes.</span></span><span class="sig-name descname"><span class="pre">get_customer_by_username</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#customers.routes.get_customer_by_username" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a customer by their unique username.
+Returns the customer’s information if found, or an error message if the customer does not exist.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="customers.routes.register_customer">
+<span class="sig-prename descclassname"><span class="pre">customers.routes.</span></span><span class="sig-name descname"><span class="pre">register_customer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#customers.routes.register_customer" title="Link to this definition">¶</a></dt>
+<dd><p>Registers a new customer. Validates that the username is unique and stores customer information.
+Returns a success message if registration is successful or an error message otherwise.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="customers.routes.update_customer">
+<span class="sig-prename descclassname"><span class="pre">customers.routes.</span></span><span class="sig-name descname"><span class="pre">update_customer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#customers.routes.update_customer" title="Link to this definition">¶</a></dt>
+<dd><p>Updates one or more fields for a customer based on the provided username.
+Valid fields include fullname, password, age, address, gender, marital_status.
+Returns a success message if the update is successful or an error message if no valid fields are provided.</p>
+</dd></dl>
+
+</section>
+<section id="module-inventory">
+<span id="inventory-module"></span><h2>Inventory Module<a class="headerlink" href="#module-inventory" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="inventory.init_inventory_service">
+<span class="sig-prename descclassname"><span class="pre">inventory.</span></span><span class="sig-name descname"><span class="pre">init_inventory_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#inventory.init_inventory_service" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes the inventory service by setting up the database and registering
+the inventory blueprint with the provided Flask app.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>app</strong> – The Flask application instance to register the blueprint with.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-inventory.db">
+<dt class="sig sig-object py" id="inventory.db.init_inventory_db">
+<span class="sig-prename descclassname"><span class="pre">inventory.db.</span></span><span class="sig-name descname"><span class="pre">init_inventory_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#inventory.db.init_inventory_db" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes the ‘inventory’ table in the database by creating it if it doesn’t exist.
+The table contains information about inventory items, including name, category,
+price, description, and stock count.</p>
+<p>This function establishes a connection to the database, executes the SQL query to
+create the table, and commits the changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-inventory.routes">
+<dt class="sig sig-object py" id="inventory.routes.add_goods">
+<span class="sig-prename descclassname"><span class="pre">inventory.routes.</span></span><span class="sig-name descname"><span class="pre">add_goods</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#inventory.routes.add_goods" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a new item to the inventory. Validates the category, price, and stock count.</p>
+<p>This route accepts a JSON request containing the item’s details:
+- name (str)
+- category (str)
+- price_per_item (float)
+- description (str, optional)
+- count_in_stock (int)</p>
+<p>It ensures that required fields are provided, category is valid, and stock
+count and price are non-negative. If the validation passes, it inserts the
+item into the inventory table and returns a success message with the item ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>None</strong></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON response with either success message and item ID, or error details.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="inventory.routes.deduct_goods">
+<span class="sig-prename descclassname"><span class="pre">inventory.routes.</span></span><span class="sig-name descname"><span class="pre">deduct_goods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#inventory.routes.deduct_goods" title="Link to this definition">¶</a></dt>
+<dd><p>Deducts a specified quantity of goods from the inventory stock.</p>
+<p>This route accepts a JSON request containing:
+- quantity (int): The number of items to deduct from the stock.</p>
+<p>It checks that the quantity is valid, and that sufficient stock is available
+before proceeding with the deduction. If successful, it returns a success message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>item_id</strong> (<em>int</em>) – The ID of the item to deduct from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON response with either success message or error details.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="inventory.routes.update_goods">
+<span class="sig-prename descclassname"><span class="pre">inventory.routes.</span></span><span class="sig-name descname"><span class="pre">update_goods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#inventory.routes.update_goods" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the fields of a specific item in the inventory.</p>
+<p>This route accepts a JSON request containing fields to update:
+- name (str, optional)
+- category (str, optional)
+- price_per_item (float, optional)
+- description (str, optional)
+- count_in_stock (int, optional)</p>
+<p>It validates the provided fields (e.g., non-negative price and stock) and updates
+the corresponding fields in the inventory database. If successful, it returns the
+updated item ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>item_id</strong> (<em>int</em>) – The ID of the item to update.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON response with either success message or error details.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-reviews">
+<span id="reviews-module"></span><h2>Reviews Module<a class="headerlink" href="#module-reviews" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="reviews.init_reviews_service">
+<span class="sig-prename descclassname"><span class="pre">reviews.</span></span><span class="sig-name descname"><span class="pre">init_reviews_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#reviews.init_reviews_service" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes the reviews service by setting up the database and registering
+the reviews blueprint with the given Flask application.</p>
+<p>This function is meant to be called within the Flask app context. It ensures
+that the necessary database tables are created and prepares the routes
+for handling review-related API requests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>app</strong> (<em>Flask</em>) – The Flask application instance to register the blueprint with.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-reviews.db">
+<dt class="sig sig-object py" id="reviews.db.init_reviews_db">
+<span class="sig-prename descclassname"><span class="pre">reviews.db.</span></span><span class="sig-name descname"><span class="pre">init_reviews_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#reviews.db.init_reviews_db" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes the reviews database by creating a ‘reviews’ table if it doesn’t
+already exist.</p>
+<p>The ‘reviews’ table includes the following fields:
+- id: A unique identifier for each review (primary key).
+- customer_id: The ID of the customer who wrote the review (foreign key).
+- item_id: The ID of the item being reviewed (foreign key).
+- rating: The rating given to the item, ranging from 1 to 5.
+- comment: A textual comment from the customer about the item.
+- is_approved: A boolean indicating if the review has been approved.
+- review_date: The timestamp when the review was created.</p>
+<p>The table also includes constraints for valid ratings and ensures foreign key relationships
+with the <cite>customers</cite> and <cite>inventory</cite> tables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-reviews.routes">
+<dt class="sig sig-object py" id="reviews.routes.authenticate_user">
+<span class="sig-prename descclassname"><span class="pre">reviews.routes.</span></span><span class="sig-name descname"><span class="pre">authenticate_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#reviews.routes.authenticate_user" title="Link to this definition">¶</a></dt>
+<dd><p>Authenticates the user by checking the ‘username’ and ‘password’ in HTTP headers.
+Returns the customer_id if valid, otherwise returns None.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="reviews.routes.delete_review">
+<span class="sig-prename descclassname"><span class="pre">reviews.routes.</span></span><span class="sig-name descname"><span class="pre">delete_review</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">review_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#reviews.routes.delete_review" title="Link to this definition">¶</a></dt>
+<dd><p>Allows customers to delete their own review.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A success message if the review was deleted or an error if the review cannot be deleted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="reviews.routes.get_customer_reviews">
+<span class="sig-prename descclassname"><span class="pre">reviews.routes.</span></span><span class="sig-name descname"><span class="pre">get_customer_reviews</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#reviews.routes.get_customer_reviews" title="Link to this definition">¶</a></dt>
+<dd><p>Lists all reviews submitted by a specific customer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of reviews made by the customer, or an error if no reviews are found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="reviews.routes.get_product_reviews">
+<span class="sig-prename descclassname"><span class="pre">reviews.routes.</span></span><span class="sig-name descname"><span class="pre">get_product_reviews</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#reviews.routes.get_product_reviews" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all approved reviews for a specific product.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of reviews for the product, or an error if no reviews are found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="reviews.routes.get_review_details">
+<span class="sig-prename descclassname"><span class="pre">reviews.routes.</span></span><span class="sig-name descname"><span class="pre">get_review_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">review_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#reviews.routes.get_review_details" title="Link to this definition">¶</a></dt>
+<dd><p>Provides detailed information about a specific review.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Detailed review information, including the customer and product details.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="reviews.routes.moderate_review">
+<span class="sig-prename descclassname"><span class="pre">reviews.routes.</span></span><span class="sig-name descname"><span class="pre">moderate_review</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">review_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#reviews.routes.moderate_review" title="Link to this definition">¶</a></dt>
+<dd><p>Allows administrators to approve or flag reviews.</p>
+<p>The request must include:
+- is_approved: Boolean value indicating whether the review should be approved or flagged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A success message if the review was moderated successfully.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="reviews.routes.submit_review">
+<span class="sig-prename descclassname"><span class="pre">reviews.routes.</span></span><span class="sig-name descname"><span class="pre">submit_review</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#reviews.routes.submit_review" title="Link to this definition">¶</a></dt>
+<dd><p>Allows customers to submit a review for a specific product.</p>
+<p>The request must include:
+- item_id: ID of the product being reviewed.
+- rating: Rating between 1 and 5.
+- comment: Optional textual review.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A success message with the review ID, or error messages for invalid input.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="reviews.routes.update_review">
+<span class="sig-prename descclassname"><span class="pre">reviews.routes.</span></span><span class="sig-name descname"><span class="pre">update_review</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">review_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#reviews.routes.update_review" title="Link to this definition">¶</a></dt>
+<dd><p>Allows customers to update their existing review.</p>
+<p>The request must include at least one of the following:
+- rating: A new rating between 1 and 5.
+- comment: A new review comment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A success message if the review was updated or an error if the review cannot be updated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-sales">
+<span id="sales-module"></span><h2>Sales Module<a class="headerlink" href="#module-sales" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="sales.init_sales_service">
+<span class="sig-prename descclassname"><span class="pre">sales.</span></span><span class="sig-name descname"><span class="pre">init_sales_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sales.init_sales_service" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes the sales service for the application by setting up the database
+and registering the sales blueprint with the app.</p>
+</dd></dl>
+
+<dl class="py function" id="module-sales.db">
+<dt class="sig sig-object py" id="sales.db.init_sales_db">
+<span class="sig-prename descclassname"><span class="pre">sales.db.</span></span><span class="sig-name descname"><span class="pre">init_sales_db</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sales.db.init_sales_db" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes the sales database by creating the ‘sales’ table if it doesn’t exist.
+The table tracks sales transactions with references to customers and inventory items.</p>
+</dd></dl>
+
+<dl class="py function" id="module-sales.routes">
+<dt class="sig sig-object py" id="sales.routes.display_available_goods">
+<span class="sig-prename descclassname"><span class="pre">sales.routes.</span></span><span class="sig-name descname"><span class="pre">display_available_goods</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sales.routes.display_available_goods" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a list of available goods with their name and price.
+Filters out items with zero stock and only includes those with available quantity.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sales.routes.get_customer_purchases">
+<span class="sig-prename descclassname"><span class="pre">sales.routes.</span></span><span class="sig-name descname"><span class="pre">get_customer_purchases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sales.routes.get_customer_purchases" title="Link to this definition">¶</a></dt>
+<dd><p>Returns all historical purchases made by a specific customer.
+Retrieves a list of all past purchases including item details, quantity, and sale date.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sales.routes.get_good_details">
+<span class="sig-prename descclassname"><span class="pre">sales.routes.</span></span><span class="sig-name descname"><span class="pre">get_good_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sales.routes.get_good_details" title="Link to this definition">¶</a></dt>
+<dd><p>Returns full information related to a specific good by item_id.
+Retrieves details including the name, category, price, description, and stock count.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sales.routes.make_purchase">
+<span class="sig-prename descclassname"><span class="pre">sales.routes.</span></span><span class="sig-name descname"><span class="pre">make_purchase</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sales.routes.make_purchase" title="Link to this definition">¶</a></dt>
+<dd><p>Processes a sale where a customer purchases an item.
+Checks for sufficient stock, customer funds, and updates both wallet and inventory accordingly.</p>
+</dd></dl>
+
+</section>
+<section id="module-app_init">
+<span id="app-module"></span><h2>App Module<a class="headerlink" href="#module-app_init" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app_init.create_app">
+<span class="sig-prename descclassname"><span class="pre">app_init.</span></span><span class="sig-name descname"><span class="pre">create_app</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app_init.create_app" title="Link to this definition">¶</a></dt>
+<dd><p>Creates and configures the Flask application.</p>
+<p>Sets up the rate limiter for API requests, ensuring that users
+are restricted to 200 requests per day and 50 requests per hour.</p>
+<p>Initializes database connections and sets up services for handling
+customers, inventory, sales, and reviews.</p>
+<p>Registers an error handler to manage rate-limiting exceptions (HTTP 429).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The configured Flask application instance.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Flask</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">ecommerce_MohamadBailoun</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Mohamad Bailoun.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
