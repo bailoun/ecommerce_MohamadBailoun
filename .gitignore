@@ -8,6 +8,4 @@ __pycache__/
 # Ignore virtual environment
 venv/
 
-aws_credentials
-
 .env
