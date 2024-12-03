@@ -8,4 +8,5 @@ __pycache__/
 # Ignore virtual environment
 venv/
 
+#Ignore the environment variables file
 .env
